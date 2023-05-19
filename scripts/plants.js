@@ -40,8 +40,8 @@ const plantData = getPlantData()
 function renderPlantInfo(data) {
   ////create elements
   let plantDiv = document.createElement("div")
-  let commonName = document.createElement("h4")
-  let latinName = document.createElement("h5")
+  let commonName = document.createElement("p")
+  let latinName = document.createElement("p")
   let plantImage = document.createElement("img")
   ////set attributes for styling
   plantDiv.setAttribute("class", "plant-div")

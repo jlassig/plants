@@ -2,6 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Ysabeau&display=swap"
+      rel="stylesheet" />
     <link rel="stylesheet" href="styles/styles.css" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,12 +17,14 @@
       <h1>Houseplant Care</h1>
     </header>
     <main>
+      <form class="name-form">
+        <label for="plant-name">Enter common name of plant</label>
+        <input type="text" id="plant-name" name="plant-name" />
+                <button type="submit" id="search-submit">Search</button>
+      </form>
       <form class="search-form">
-        <!-- <label for="plant-name">Enter common name of plant</label>
-        <input type="text" id="plant-name" name="plant-name" /> -->
-
         <label for="climate-select">Choose a climate</label>
-        <select id="climate-select" name="climate-select">
+        <select id="climate-select" name="climate-select" class="climate-select">
           <option disabled selected value="">Select an option</option>
           <option value="Tropical">Tropical</option>
           <option value="Subtropical">Subtropical</option>
@@ -27,9 +34,7 @@
         </select>
 
         <label for="category-select">Choose a category</label>
-        <select
-          id="category-select"
-          name="category-select">
+        <select id="category-select" name="category-select" class="category-select">
           <option disabled selected value="">Select an option</option>
           <option value="Aglaonema">Aglaonema</option>
           <option value="Anthurium">Anthurium</option>
@@ -54,9 +59,9 @@
           <option value="Other">Other</option>
           <!-- perhaps add all the categories that have less than 5 to "other"  -->
         </select>
+        </form>
 
-        <!-- <button type="submit" id="search-submit">Search</button> -->
-      </form>
+
 
       <section id="plant-section" class="plant-section"></section>
     </main>

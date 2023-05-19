@@ -1,26 +1,53 @@
+:root {
+  /*FONTS:*/
+  --heading: "Bad Script", "Brush Script MT", serif;
+  --paragraph: "Ysabeau", Tahoma, sans-serif;
+
+  /*COLORS:*/
+  --primary: #425934;
+  --secondary: #E1CBB7;
+  --tertiary: #4F759B;
+  --black: #130303;
+  --white: #ECECEC;
+}
+
 header{
  text-align: center;
  font-size: 2em;
+ font-family: var(--heading);
+ background-color: var(--primary);
+ color: var(--white);
 }
 
-.search-form{
- border: 2px solid black;
+.search-form, .name-form{
+ border: 2px solid var(--black);
+ padding: 20px;
+ text-align: center;
+ font-family: var(--paragraph);
+}
+.climate-select{
+ margin-right: 2em;
+}
+.climate-select, .category-select{
+ padding: .5em;
 }
 
 .plant-div {
-  border: 2px solid black;
+  border: 2px solid var(--black);
   width: 300px;
   text-align: center;
   padding: 2em;
-
+  background-color: var(--secondary);
 }
 
 .common-name {
-  font-size: 1.1em;
+  font-size: 1.2em;
+  font-family: var(--paragraph);
 }
 
 .latin-name {
   font-size: 1em;
+    font-family: var(--paragraph);
 }
 
 .plant-section {
