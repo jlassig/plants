@@ -1,0 +1,37 @@
+header{
+ text-align: center;
+ font-size: 2em;
+}
+
+.search-form{
+ border: 2px solid black;
+}
+
+.plant-div {
+  border: 2px solid black;
+  width: 300px;
+  text-align: center;
+  padding: 2em;
+
+}
+
+.common-name {
+  font-size: 1.1em;
+}
+
+.latin-name {
+  font-size: 1em;
+}
+
+.plant-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media screen and (min-width: 700px) {
+ body{
+  max-width: 80%;
+  margin: auto;
+ }
+}
