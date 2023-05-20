@@ -13,13 +13,13 @@ const options = {
 
 function getPlantData() {
   const storedData = localStorage.getItem("plantData")
-
+  //////Is the data already in local storage???
   if (storedData) {
     const parsedData = JSON.parse(storedData)
     // console.log(parsedData)
     return parsedData
   } else {
-    // Fetch the data from the API if not available in local storage
+    /////// Fetch the data from the API if not available in local storage
     getPlantAPI()
   }
 }
@@ -43,8 +43,13 @@ function renderPlantInfo(data, searchType) {
   let commonName = document.createElement("p")
   let latinName = document.createElement("p")
   let plantImage = document.createElement("img")
+
   ////set attributes for styling
   plantDiv.setAttribute("class", "plant-div")
+//////getting a popup with info: 
+  plantDiv.addEventListener("click", function () {
+    renderCareInstructions(plantDiv)
+  })
   commonName.setAttribute("class", "common-name")
   latinName.setAttribute("class", "latin-name")
   plantImage.setAttribute("class", "plant-image")
@@ -91,23 +96,34 @@ function renderPlantInfo(data, searchType) {
   plantSection.appendChild(plantDiv)
 }
 
+//////the care instructions that popup when a card is clicked on
+function renderCareInstructions(plantDiv) {
+  //////create elements
+  const careDiv = document.createElement("div")
+
+  //////set attributes for the elements
+  careDiv.setAttribute("class", "care-div")
+  careDiv.style.display = "block"
+
+
+  
+  careDiv.innerHTML = "yay, this works"
+  plantDiv.appendChild(careDiv)
+}
+
 ////// searching by name fields
 const nameForm = document.getElementById("name-form")
 const nameSelect = document.getElementById("plant-name")
-const nameSubmitBtn = document.getElementById("name-submit")
 ////// the dropdowns:
 const climateSelect = document.getElementById("climate-select")
 const categorySelect = document.getElementById("category-select")
 
 //////Searching by name:
-
 nameForm.addEventListener("submit", function (event) {
   event.preventDefault()
   climateSelect.value = ""
   categorySelect.value = ""
-  // const nameValue = nameSelect.value
-      const nameValue = nameSelect.value.toUpperCase()
-
+  const nameValue = nameSelect.value.toUpperCase()
   if (nameSelect.value == "") {
     searchByName(nameValue, true)
   } else {
@@ -119,27 +135,27 @@ function searchByName(nameValue, blankName) {
   plantSection.innerHTML = ""
   for (let i = 0; i < plantData.length; i++) {
     const commonName = plantData[i]["Common name"]
-
+    ////// "blankName" is for when the input box is blank and user clicks "submit". The reason I put this in here is because there are quite a few plants where the Common Name is blank. This pulls those plants up.
     if (blankName) {
-      if (!commonName || (Array.isArray(commonName) && commonName.length === 0)) {
-        renderPlantInfo(plantData[i], "name");
-      }
-    }
-
-    else {
       if (
+        !commonName ||
+        (Array.isArray(commonName) && commonName.length === 0)
+      ) {
+        renderPlantInfo(plantData[i], "name")
+      }
+      //////The following code is because the Common Name in the API pulls back either an Array or a String
+    } else {
+      if (
+        //////if the Common Name has an array, then do this one.
         Array.isArray(commonName) &&
         commonName.some((name) => name.toUpperCase().includes(nameValue))
       ) {
-        // if (Array.isArray(commonName) && commonName.includes(nameValue))
-
         renderPlantInfo(plantData[i], "name")
       } else if (
+        ///// else if the Common Name is a string, then do this one.
         typeof commonName === "string" &&
         commonName.toUpperCase().includes(nameValue)
       ) {
-        // else if (typeof commonName === "string") {
-
         renderPlantInfo(plantData[i], "name")
       }
     }
@@ -167,7 +183,6 @@ function searchByClimate(climateSelect) {
 }
 
 //////searching by category:
-
 categorySelect.addEventListener("change", function () {
   climateSelect.value = ""
   nameSelect.value = ""

@@ -48,6 +48,7 @@ form label{
   padding: 2em;
   background-color: var(--secondary);
     font-family: var(--paragraph);
+    cursor: pointer;
 }
 
 .common-name {
@@ -60,6 +61,14 @@ form label{
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.care-div{
+ display: block;
+ background-color: var(--tertiary);
+ font-family: var(--paragraph);
+ color: var(--black);
+ font-weight: black;
 }
 
 @media screen and (min-width: 700px) {
