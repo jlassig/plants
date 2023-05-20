@@ -105,7 +105,9 @@ nameForm.addEventListener("submit", function (event) {
   event.preventDefault()
   climateSelect.value = ""
   categorySelect.value = ""
-  const nameValue = nameSelect.value
+  // const nameValue = nameSelect.value
+  const nameValue = nameSelect.value.toUpperCase()
+
 
   searchByName(nameValue)
 })
@@ -115,9 +117,19 @@ function searchByName(nameValue) {
   for (let i = 0; i < plantData.length; i++) {
     const commonName = plantData[i]["Common name"]
 
-    if (Array.isArray(commonName) && commonName.includes(nameValue)) {
+    if (
+      Array.isArray(commonName) &&
+      commonName.some((name) => name.toUpperCase().includes(nameValue))
+    ) {
+      // if (Array.isArray(commonName) && commonName.includes(nameValue))
+
       renderPlantInfo(plantData[i], "name")
-    } else if (typeof commonName === "string") {
+    } else if (
+      typeof commonName === "string" &&
+      commonName.toUpperCase().includes(nameValue)
+    ) {
+      // else if (typeof commonName === "string") {
+
       renderPlantInfo(plantData[i], "name")
     }
   }
