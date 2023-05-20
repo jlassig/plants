@@ -16,6 +16,7 @@ function getPlantData() {
 
   if (storedData) {
     const parsedData = JSON.parse(storedData)
+    // console.log(parsedData)
     return parsedData
   } else {
     // Fetch the data from the API if not available in local storage
@@ -27,7 +28,6 @@ async function getPlantAPI() {
   try {
     const response = await fetch(url, options)
     const result = await response.json()
-    console.log(result)
     localStorage.setItem("plantData", JSON.stringify(result))
     return result
   } catch (error) {
@@ -37,7 +37,7 @@ async function getPlantAPI() {
 
 const plantData = getPlantData()
 
-function renderPlantInfo(data) {
+function renderPlantInfo(data, searchType) {
   ////create elements
   let plantDiv = document.createElement("div")
   let commonName = document.createElement("p")
@@ -74,12 +74,53 @@ function renderPlantInfo(data) {
   plantDiv.appendChild(commonName)
   plantDiv.appendChild(latinName)
 
+  ////adding what the user searched by, climate or category
+  if (searchType === "climate") {
+    let climateType = document.createElement("p")
+    climateType.setAttribute("class", "climate")
+    climateType.innerHTML = `Climate: <br>${data["Climat"]}`
+    plantDiv.appendChild(climateType)
+  }
+  else if(searchType === "category"){
+    let category = document.createElement("p")
+    category.setAttribute("class", "category")
+    category.innerHTML=`Category: <br>${data["Categories"]}`
+    plantDiv.appendChild(category)
+  }
+
+  /////putting it all in the plant Section
   plantSection.appendChild(plantDiv)
 }
+const nameForm = document.getElementById("name-form")
+const nameSelect = document.getElementById("plant-name")
+const nameSubmitBtn = document.getElementById("name-submit")
 
+//////Searching by name:
+// document.addEventListener("DOMContentLoaded", function (event) {
+//   event.preventDefault()
+
+nameForm.addEventListener("submit", function (event) {
+  event.preventDefault()
+  const nameValue = nameSelect.value
+
+  searchByName(nameValue)
+})
+
+function searchByName(nameValue) {
+  plantSection.innerHTML = ""
+  for (let i = 0; i < plantData.length; i++) {
+    const commonName = plantData[i]["Common name"]
+
+    if (Array.isArray(commonName) && commonName.includes(nameValue)) {
+      renderPlantInfo(plantData[i], "name")
+    } else if (typeof commonName === "string") {
+      renderPlantInfo(plantData[i], "name")
+    }
+  }
+}
+// })
 /////Searching by climate:
 const climateSelect = document.getElementById("climate-select")
-
 climateSelect.addEventListener("change", function () {
   const selectedClimate = this.value
   if (selectedClimate !== "") {
@@ -92,7 +133,7 @@ function searchByClimate(climateSelect) {
   for (let i = 0; i < plantData.length; i++) {
     ////"Climat" is NOT misspelled here. This is how it is spelled in the API.
     if (plantData[i]["Climat"] === climateSelect) {
-      renderPlantInfo(plantData[i])
+      renderPlantInfo(plantData[i], "climate")
     }
   }
 }
@@ -111,15 +152,10 @@ function searchByCategory(category) {
   plantSection.innerHTML = ""
   for (let i = 0; i < plantData.length; i++) {
     if (plantData[i]["Categories"] === category) {
-      renderPlantInfo(plantData[i])
+      renderPlantInfo(plantData[i], "category")
     }
   }
-  console.log("Searching by Category:", category)
 }
-
-
-
-
 
 // async function getPlantData() {
 //   try {

@@ -17,14 +17,17 @@
       <h1>Houseplant Care</h1>
     </header>
     <main>
-      <form class="name-form">
+      <form id="name-form">
         <label for="plant-name">Enter common name of plant</label>
-        <input type="text" id="plant-name" name="plant-name" />
-                <button type="submit" id="search-submit">Search</button>
+        <input type="text" id="plant-name" name="plant-name" required/>
+        <button type="submit" id="name-submit">Search</button>
       </form>
       <form class="search-form">
         <label for="climate-select">Choose a climate</label>
-        <select id="climate-select" name="climate-select" class="climate-select">
+        <select
+          id="climate-select"
+          name="climate-select"
+          class="climate-select">
           <option disabled selected value="">Select an option</option>
           <option value="Tropical">Tropical</option>
           <option value="Subtropical">Subtropical</option>
@@ -34,7 +37,10 @@
         </select>
 
         <label for="category-select">Choose a category</label>
-        <select id="category-select" name="category-select" class="category-select">
+        <select
+          id="category-select"
+          name="category-select"
+          class="category-select">
           <option disabled selected value="">Select an option</option>
           <option value="Aglaonema">Aglaonema</option>
           <option value="Anthurium">Anthurium</option>
@@ -59,9 +65,7 @@
           <option value="Other">Other</option>
           <!-- perhaps add all the categories that have less than 5 to "other"  -->
         </select>
-        </form>
-
-
+      </form>
 
       <section id="plant-section" class="plant-section"></section>
     </main>
