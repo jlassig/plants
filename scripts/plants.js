@@ -106,31 +106,42 @@ nameForm.addEventListener("submit", function (event) {
   climateSelect.value = ""
   categorySelect.value = ""
   // const nameValue = nameSelect.value
-  const nameValue = nameSelect.value.toUpperCase()
+      const nameValue = nameSelect.value.toUpperCase()
 
-
-  searchByName(nameValue)
+  if (nameSelect.value == "") {
+    searchByName(nameValue, true)
+  } else {
+    searchByName(nameValue, false)
+  }
 })
 
-function searchByName(nameValue) {
+function searchByName(nameValue, blankName) {
   plantSection.innerHTML = ""
   for (let i = 0; i < plantData.length; i++) {
     const commonName = plantData[i]["Common name"]
 
-    if (
-      Array.isArray(commonName) &&
-      commonName.some((name) => name.toUpperCase().includes(nameValue))
-    ) {
-      // if (Array.isArray(commonName) && commonName.includes(nameValue))
+    if (blankName) {
+      if (!commonName || (Array.isArray(commonName) && commonName.length === 0)) {
+        renderPlantInfo(plantData[i], "name");
+      }
+    }
 
-      renderPlantInfo(plantData[i], "name")
-    } else if (
-      typeof commonName === "string" &&
-      commonName.toUpperCase().includes(nameValue)
-    ) {
-      // else if (typeof commonName === "string") {
+    else {
+      if (
+        Array.isArray(commonName) &&
+        commonName.some((name) => name.toUpperCase().includes(nameValue))
+      ) {
+        // if (Array.isArray(commonName) && commonName.includes(nameValue))
 
-      renderPlantInfo(plantData[i], "name")
+        renderPlantInfo(plantData[i], "name")
+      } else if (
+        typeof commonName === "string" &&
+        commonName.toUpperCase().includes(nameValue)
+      ) {
+        // else if (typeof commonName === "string") {
+
+        renderPlantInfo(plantData[i], "name")
+      }
     }
   }
 }
@@ -174,69 +185,3 @@ function searchByCategory(category) {
     }
   }
 }
-
-// async function getPlantData() {
-//   try {
-//     const response = await fetch(url, options)
-//     const result = await response.json()
-//     console.log(result)
-//     localStorage.setItem("plantData", JSON.stringify(result))
-//     // renderPlantInfo(result)
-//     return result
-//   } catch (error) {
-//     console.error(error)
-//   }
-// }
-
-// function renderPlantInfo(data) {
-//   // for (let i = 0; i < data.length; i++) {
-//     ////create elements
-//     let plantDiv = document.createElement("div")
-//     let commonName = document.createElement("h4")
-//     let latinName = document.createElement("h5")
-//     let plantImage = document.createElement("img")
-//     ////set attributes for styling
-//     plantDiv.setAttribute("class", "plant-div")
-//     commonName.setAttribute("class", "common-name")
-//     latinName.setAttribute("class", "latin-name")
-//     plantImage.setAttribute("class", "plant-image")
-//     plantImage.setAttribute("src", data[i]["Img"])
-//     plantImage.setAttribute("loading", "lazy")
-//     plantImage.setAttribute("width", "150")
-//     plantImage.setAttribute("height", "150")
-
-//     ////formatting the commonName (because sometimes it's an array that smooshes several plant names together only seperated by a comma with no space)
-//     let commonNameValue = data[i]["Common name"]
-//     let formattedCommonName = ""
-//     if (Array.isArray(commonNameValue)) {
-//       formattedCommonName = commonNameValue
-//         .map((name) => name.trim())
-//         .join("<br>")
-//     } else if (typeof commonNameValue === "string") {
-//       formattedCommonName = commonNameValue
-//     }
-
-//     ////fill up the HTML
-//     // commonName.innerHTML = `Common name: <br>${data[i]["Common name"]}`
-//     commonName.innerHTML = `Common name: <br>${formattedCommonName}`
-//     latinName.innerHTML = `Latin name: <br>${data[i]["Latin name"]}`
-
-//     ////append the things
-//     plantDiv.appendChild(plantImage)
-//     plantDiv.appendChild(commonName)
-//     plantDiv.appendChild(latinName)
-
-//     plantSection.appendChild(plantDiv)
-//   }
-// // }
-
-// // Check if the data exists in local storage
-// const storedData = localStorage.getItem("plantData")
-
-// if (storedData) {
-//   const parsedData = JSON.parse(storedData)
-//   renderPlantInfo(parsedData)
-// } else {
-//   // Fetch the data from the API if not available in local storage
-//   getPlantData()
-// }
