@@ -25,11 +25,19 @@ header{
  text-align: center;
  font-family: var(--paragraph);
 }
-.climate-select{
+/* .climate-select{
  margin-right: 2em;
-}
+} */
 .climate-select, .category-select{
  padding: .5em;
+}
+
+form label{
+ display: block;
+}
+.search-form{
+ display: flex;
+ flex-direction: column;
 }
 
 .plant-div {
@@ -38,17 +46,14 @@ header{
   text-align: center;
   padding: 2em;
   background-color: var(--secondary);
+    font-family: var(--paragraph);
 }
 
 .common-name {
   font-size: 1.2em;
-  font-family: var(--paragraph);
+  font-weight: bold;
 }
 
-.latin-name {
-  font-size: 1em;
-    font-family: var(--paragraph);
-}
 
 .plant-section {
   display: flex;
@@ -60,5 +65,9 @@ header{
  body{
   max-width: 80%;
   margin: auto;
+ }
+ .search-form{
+  flex-direction: row;
+  justify-content: space-around;
  }
 }
