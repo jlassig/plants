@@ -25,9 +25,7 @@ header{
  text-align: center;
  font-family: var(--paragraph);
 }
-/* .climate-select{
- margin-right: 2em;
-} */
+
 .climate-select, .category-select{
  padding: .5em;
 }
@@ -38,6 +36,9 @@ form label{
 .search-form{
  display: flex;
  flex-direction: column;
+}
+.search-form div{
+ margin-bottom: 1em;
 }
 
 .plant-div {

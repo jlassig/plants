@@ -80,27 +80,31 @@ function renderPlantInfo(data, searchType) {
     climateType.setAttribute("class", "climate")
     climateType.innerHTML = `Climate: <br>${data["Climat"]}`
     plantDiv.appendChild(climateType)
-  }
-  else if(searchType === "category"){
+  } else if (searchType === "category") {
     let category = document.createElement("p")
     category.setAttribute("class", "category")
-    category.innerHTML=`Category: <br>${data["Categories"]}`
+    category.innerHTML = `Category: <br>${data["Categories"]}`
     plantDiv.appendChild(category)
   }
 
   /////putting it all in the plant Section
   plantSection.appendChild(plantDiv)
 }
+
+////// searching by name fields
 const nameForm = document.getElementById("name-form")
 const nameSelect = document.getElementById("plant-name")
 const nameSubmitBtn = document.getElementById("name-submit")
+////// the dropdowns:
+const climateSelect = document.getElementById("climate-select")
+const categorySelect = document.getElementById("category-select")
 
 //////Searching by name:
-// document.addEventListener("DOMContentLoaded", function (event) {
-//   event.preventDefault()
 
 nameForm.addEventListener("submit", function (event) {
   event.preventDefault()
+  climateSelect.value = ""
+  categorySelect.value = ""
   const nameValue = nameSelect.value
 
   searchByName(nameValue)
@@ -118,10 +122,11 @@ function searchByName(nameValue) {
     }
   }
 }
-// })
+
 /////Searching by climate:
-const climateSelect = document.getElementById("climate-select")
 climateSelect.addEventListener("change", function () {
+  categorySelect.value = ""
+  nameSelect.value = ""
   const selectedClimate = this.value
   if (selectedClimate !== "") {
     searchByClimate(selectedClimate)
@@ -139,9 +144,10 @@ function searchByClimate(climateSelect) {
 }
 
 //////searching by category:
-const categorySelect = document.getElementById("category-select")
 
 categorySelect.addEventListener("change", function () {
+  climateSelect.value = ""
+  nameSelect.value = ""
   const selectedCategory = this.value
   if (selectedCategory !== "") {
     searchByCategory(selectedCategory)
