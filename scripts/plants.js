@@ -100,15 +100,38 @@ function renderPlantInfo(data, searchType) {
 function renderCareInstructions(plantDiv) {
   //////create elements
   const careDiv = document.createElement("div")
+  const commonName = document.createElement("p")
+  const lighting = document.createElement("p")
+  const pruning = document.createElement("p")
+  const watering = document.createElement("p")
+  const temp = document.createElement("p")
+  const height = document.createElement("p")
+  const moreInfo = document.createElement("a")
+
 
   //////set attributes for the elements
   careDiv.setAttribute("class", "care-div")
   careDiv.style.display = "block"
+  moreInfo.setAttribute("class", "more-info")
 
+//////inner HTML for the elements:
+commonName.innerHTML=("Common Name: ")
+lighting.innerHTML=("Ideal Light: ")
+pruning.innerHTML=("Pruning: ")
+watering.innerHTML=("Watering: ")
+temp.innerHTML=("Temperature range: ")
+height.innerHTML = ("Height: ")
 
-  
-  careDiv.innerHTML = "yay, this works"
-  plantDiv.appendChild(careDiv)
+////// add the things to CareDiv
+  careDiv.appendChild(commonName)
+  careDiv.appendChild(lighting)
+  careDiv.appendChild(pruning)
+  careDiv.appendChild(watering)
+  careDiv.appendChild(temp)
+  careDiv.appendChild(height)
+
+  /////// add careDiv to the body so it can pop up on top of the cards
+  document.body.appendChild(careDiv)
 }
 
 ////// searching by name fields
