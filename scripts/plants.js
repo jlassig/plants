@@ -1,6 +1,7 @@
 ////GET all plants (lite)
 
 const url = "https://house-plants2.p.rapidapi.com/all-lite"
+
 const plantSection = document.getElementById("plant-section")
 
 const options = {
@@ -9,6 +10,18 @@ const options = {
     "X-RapidAPI-Key": "f2a4a9ae1amsh1f993993744a5c0p1d80e7jsn459d2fc1500d",
     "X-RapidAPI-Host": "house-plants2.p.rapidapi.com",
   },
+}
+
+async function getPlantSingle(id) {
+  const url = `https://house-plants2.p.rapidapi.com/id/${id}`
+  try {
+    const response = await fetch(url, options)
+    const result = await response.text()
+    console.log(result)
+    return result
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 function getPlantData() {
@@ -46,10 +59,6 @@ function renderPlantInfo(data, searchType) {
 
   ////set attributes for styling
   plantDiv.setAttribute("class", "plant-div")
-  //////getting a popup with info:
-  plantDiv.addEventListener("click", function () {
-    renderCareInstructions()
-  })
   commonName.setAttribute("class", "common-name")
   latinName.setAttribute("class", "latin-name")
   plantImage.setAttribute("class", "plant-image")
@@ -69,6 +78,13 @@ function renderPlantInfo(data, searchType) {
     formattedCommonName = commonNameValue
   }
 
+  //////getting the ID for the careDiv card
+  const id = data["id"]
+
+  //////getting a popup with info:
+  plantDiv.addEventListener("click", function () {
+    renderCareInstructions(formattedCommonName, id)
+  })
   ////fill up the HTML
   // commonName.innerHTML = `Common name: <br>${data[i]["Common name"]}`
   commonName.innerHTML = `Common name: <br>${formattedCommonName}`
@@ -97,7 +113,15 @@ function renderPlantInfo(data, searchType) {
 }
 
 //////the care instructions that popup when a card is clicked on
-function renderCareInstructions() {
+function renderCareInstructions(name, id) {
+  const data = getPlantSingle(id)
+  
+  const heightInMeters = data["Height potential"]["M"]
+  const convertedHeight = convertHeight(heightInMeters)
+
+  const tempMax = data["Temperature max"]["F"]
+  const tempMin = data["Temperature min"]["F"]
+
   //////create elements
   const careDiv = document.createElement("div")
   const commonName = document.createElement("p")
@@ -116,15 +140,13 @@ function renderCareInstructions() {
   moreInfo.setAttribute("class", "more-info")
   closeBtn.setAttribute("class", "close-care-div")
 
-  
-
   //////inner HTML for the elements:
-  commonName.innerHTML = "Common Name: "
-  lighting.innerHTML = "Ideal Light: "
-  pruning.innerHTML = "Pruning: "
-  watering.innerHTML = "Watering: "
-  temp.innerHTML = "Temperature range: "
-  height.innerHTML = "Height: "
+  commonName.innerHTML = `Common name: ${name}`
+  lighting.innerHTML = `Ideal light: ${data["Light ideal"]}`
+  pruning.innerHTML = `Pruning: ${data["Pruning"]}`
+  watering.innerHTML = `Watering: ${data["Watering"]}`
+  temp.innerHTML = `Temperature range: ${tempMin} - ${tempMax} &#xb0;F`
+  height.innerHTML = `Height: ${convertedHeight} feet`
   closeBtn.innerHTML = "Close"
 
   ////// add the things to CareDiv
@@ -147,6 +169,15 @@ function renderCareInstructions() {
 function closeCareDiv(careDiv) {
   careDiv.style.display = "none"
 }
+
+
+//////height is in Meters, which just makes sense, but since I live in the US and we have weird measuring I'm going to convert it to feet. Ugggh
+function convertHeight(height){
+  const heightInFeet = height * 3.28084
+  const heightString = heightInFeet.toFixed(2)
+  return heightString
+}
+
 
 ////// searching by name fields
 const nameForm = document.getElementById("name-form")
