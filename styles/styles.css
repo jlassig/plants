@@ -73,6 +73,30 @@ form label{
  font-family: var(--paragraph);
  color: var(--black);
  font-weight: black;
+ padding: 1em 2em 2em 2em;
+ font-size: 1.3em;
+
+}
+
+.care-name{
+ text-align: center;
+}
+.warning{
+ color: red;
+ font-weight: bold;
+}
+
+.close-care-div{
+ display: block;
+ padding: .1em;
+ font-size: 1.5em;
+ margin: auto;
+ background-color: var(--tertiary);
+ border: 2px solid var(--black);
+}
+
+.more-info{
+ color: var(--white);
 }
 
 @media screen and (min-width: 700px) {

@@ -12,15 +12,29 @@ const options = {
   },
 }
 
-async function getPlantSingle(id) {
-  const url = `https://house-plants2.p.rapidapi.com/id/${id}`
-  try {
-    const response = await fetch(url, options)
-    const result = await response.text()
-    console.log(result)
-    return result
-  } catch (error) {
-    console.error(error)
+async function getSinglePlantData(id) {
+  const storedData = localStorage.getItem(`ID = ${id}`)
+  //////Is the data already in local storage???
+  if (storedData) {
+    try {
+      const parsedData = JSON.parse(storedData)
+      console.log(`This is in local storage:`, parsedData)
+      return parsedData
+    } catch (error) {
+      console.error("Error parsing local storage data:", error)
+      localStorage.removeItem(`ID = ${id}`)
+    }
+  } else {
+    const url = `https://house-plants2.p.rapidapi.com/id/${id}`
+    try {
+      const response = await fetch(url, options)
+      const result = await response.json()
+      localStorage.setItem(`ID = ${id}`, JSON.stringify(result))
+      console.log(`This came from the API:`, result)
+      return result
+    } catch (error) {
+      console.error("Error fetching data from API:", error)
+    }
   }
 }
 
@@ -113,14 +127,8 @@ function renderPlantInfo(data, searchType) {
 }
 
 //////the care instructions that popup when a card is clicked on
-function renderCareInstructions(name, id) {
-  const data = getPlantSingle(id)
-  
-  const heightInMeters = data["Height potential"]["M"]
-  const convertedHeight = convertHeight(heightInMeters)
-
-  const tempMax = data["Temperature max"]["F"]
-  const tempMin = data["Temperature min"]["F"]
+async function renderCareInstructions(name, id) {
+  const data = await getSinglePlantData(id)
 
   //////create elements
   const careDiv = document.createElement("div")
@@ -130,33 +138,66 @@ function renderCareInstructions(name, id) {
   const watering = document.createElement("p")
   const temp = document.createElement("p")
   const height = document.createElement("p")
-  const moreInfo = document.createElement("a")
+  const disease = document.createElement("p")
+  const insects = document.createElement("p")
 
+  const moreInfo = document.createElement("a")
   const closeBtn = document.createElement("button")
 
   //////set attributes for the elements
   careDiv.setAttribute("class", "care-div")
   careDiv.style.display = "block"
+  commonName.setAttribute("class", "care-name")
   moreInfo.setAttribute("class", "more-info")
+  moreInfo.setAttribute("href", data["Url"])
+  moreInfo.setAttribute("target", "blank")
   closeBtn.setAttribute("class", "close-care-div")
 
+  //////get some info for these values:
+  const heightInMeters = data["Height potential"]
+  const heightString = getHeightString(heightInMeters)
+
+  const tempString = getTempString(
+    data["Temperature min"],
+    data["Temperature max"]
+  )
+
+  const diseaseInfo = data["Disease"]
+  const diseaseString = dealWithArrays(diseaseInfo)
+
+  const insectInfo = data["Insects"]
+  const insectString = dealWithArrays(insectInfo)
+
   //////inner HTML for the elements:
-  commonName.innerHTML = `Common name: ${name}`
+  commonName.innerHTML = `Common name: <br>${name}`
   lighting.innerHTML = `Ideal light: ${data["Light ideal"]}`
   pruning.innerHTML = `Pruning: ${data["Pruning"]}`
   watering.innerHTML = `Watering: ${data["Watering"]}`
-  temp.innerHTML = `Temperature range: ${tempMin} - ${tempMax} &#xb0;F`
-  height.innerHTML = `Height: ${convertedHeight} feet`
-  closeBtn.innerHTML = "Close"
+  temp.innerHTML = `${tempString}`
+  height.innerHTML = heightString
+  disease.innerHTML = `Typical Diseases: ${diseaseString}`
+  insects.innerHTML = `Typical Insects: ${insectString}`
+
+  moreInfo.innerHTML = "More Info"
+  closeBtn.innerHTML = "❌"
+
+
+  const warningSign = document.createElement("p")
+  warningSign.setAttribute("class", "warning")
+  warningSign.innerHTML="DEAR BRO. JAMES / TA, <br>Please don't click on the cards right now. I only have 500 per month. I am trying to save those for the final. "
 
   ////// add the things to CareDiv
+  careDiv.appendChild(warningSign)
   careDiv.appendChild(commonName)
   careDiv.appendChild(lighting)
   careDiv.appendChild(pruning)
   careDiv.appendChild(watering)
   careDiv.appendChild(temp)
   careDiv.appendChild(height)
+  careDiv.appendChild(disease)
+  careDiv.appendChild(insects)
 
+  careDiv.appendChild(moreInfo)
   careDiv.appendChild(closeBtn)
 
   /////// add careDiv to the body so it can pop up on top of the current cards
@@ -165,18 +206,55 @@ function renderCareInstructions(name, id) {
     closeCareDiv(careDiv)
   })
 }
+function dealWithArrays(key) {
+  formattedKey = ""
+  if (Array.isArray(key)) {
+    formattedKey = key.map((name) => name.trim()).join(", ")
+  } else if (typeof key === "string") {
+    formattedKey = key
+  }
+  return formattedKey
+}
 
 function closeCareDiv(careDiv) {
   careDiv.style.display = "none"
 }
 
-
 //////height is in Meters, which just makes sense, but since I live in the US and we have weird measuring I'm going to convert it to feet. Ugggh
-function convertHeight(height){
-  const heightInFeet = height * 3.28084
-  const heightString = heightInFeet.toFixed(2)
-  return heightString
+function getHeightString(heightInfo) {
+  let heightString = ""
+  if (heightInfo === null) {
+    heightString = `Height: Height data not specified`
+    return heightString
+  } else {
+    const heightInMeters = heightInfo["M"]
+    const heightInFeet = (heightInMeters * 3.28084).toFixed(2)
+
+    heightString = `Full-grown height: ${heightInFeet} feet`
+    return heightString
+  }
 }
+
+
+function getTempString(min, max) {
+  let tempString = ""
+  if (min === null && max === null) {
+    tempString = "Temp data not specified"
+  } else if (min === null) {
+    maxString = max["F"]
+    tempString = `Max Temperature: ${maxString}&#xb0;F`
+  } else if (max === null) {
+    minString = min["F"]
+    tempString = `Min Temperature: ${minString}&#xb0;F`
+  } else {
+    minString = min["F"]
+    maxString = max["F"]
+
+    tempString = `Temperature range: ${minString}&#xb0;F - ${maxString}&#xb0;F`
+  }
+  return tempString
+}
+
 
 
 ////// searching by name fields
