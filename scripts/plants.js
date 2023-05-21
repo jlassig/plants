@@ -46,9 +46,9 @@ function renderPlantInfo(data, searchType) {
 
   ////set attributes for styling
   plantDiv.setAttribute("class", "plant-div")
-//////getting a popup with info: 
+  //////getting a popup with info:
   plantDiv.addEventListener("click", function () {
-    renderCareInstructions(plantDiv)
+    renderCareInstructions()
   })
   commonName.setAttribute("class", "common-name")
   latinName.setAttribute("class", "latin-name")
@@ -97,7 +97,7 @@ function renderPlantInfo(data, searchType) {
 }
 
 //////the care instructions that popup when a card is clicked on
-function renderCareInstructions(plantDiv) {
+function renderCareInstructions() {
   //////create elements
   const careDiv = document.createElement("div")
   const commonName = document.createElement("p")
@@ -108,21 +108,26 @@ function renderCareInstructions(plantDiv) {
   const height = document.createElement("p")
   const moreInfo = document.createElement("a")
 
+  const closeBtn = document.createElement("button")
 
   //////set attributes for the elements
   careDiv.setAttribute("class", "care-div")
   careDiv.style.display = "block"
   moreInfo.setAttribute("class", "more-info")
+  closeBtn.setAttribute("class", "close-care-div")
 
-//////inner HTML for the elements:
-commonName.innerHTML=("Common Name: ")
-lighting.innerHTML=("Ideal Light: ")
-pruning.innerHTML=("Pruning: ")
-watering.innerHTML=("Watering: ")
-temp.innerHTML=("Temperature range: ")
-height.innerHTML = ("Height: ")
+  
 
-////// add the things to CareDiv
+  //////inner HTML for the elements:
+  commonName.innerHTML = "Common Name: "
+  lighting.innerHTML = "Ideal Light: "
+  pruning.innerHTML = "Pruning: "
+  watering.innerHTML = "Watering: "
+  temp.innerHTML = "Temperature range: "
+  height.innerHTML = "Height: "
+  closeBtn.innerHTML = "Close"
+
+  ////// add the things to CareDiv
   careDiv.appendChild(commonName)
   careDiv.appendChild(lighting)
   careDiv.appendChild(pruning)
@@ -130,8 +135,17 @@ height.innerHTML = ("Height: ")
   careDiv.appendChild(temp)
   careDiv.appendChild(height)
 
-  /////// add careDiv to the body so it can pop up on top of the cards
+  careDiv.appendChild(closeBtn)
+
+  /////// add careDiv to the body so it can pop up on top of the current cards
   document.body.appendChild(careDiv)
+  closeBtn.addEventListener("click", function () {
+    closeCareDiv(careDiv)
+  })
+}
+
+function closeCareDiv(careDiv) {
+  careDiv.style.display = "none"
 }
 
 ////// searching by name fields
