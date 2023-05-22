@@ -45,7 +45,7 @@ async function getSinglePlantData(id) {
   if (storedData) {
     try {
       const parsedData = JSON.parse(storedData)
-      console.log(`This is in local storage:`, parsedData)
+      // console.log(`This is in local storage:`, parsedData)
       return parsedData
     } catch (error) {
       console.error("Error parsing local storage data:", error)
@@ -57,7 +57,7 @@ async function getSinglePlantData(id) {
       const response = await fetch(url, options)
       const result = await response.json()
       localStorage.setItem(`ID = ${id}`, JSON.stringify(result))
-      console.log(`This came from the API:`, result)
+      // console.log(`This came from the API:`, result)
       return result
     } catch (error) {
       console.error("Error fetching data from API:", error)
@@ -126,7 +126,7 @@ if (searchForm.childElementCount === 0) {
   getSearchArray("Origin")
 }
 
-//////
+//////ugggh, I hated how climate was misspelled, categories wasn't category and Origin is capitalized. so here is where I fix them.
 function getBetterName(searchType) {
   let name = ""
   if (searchType == "Climat") {
@@ -184,23 +184,15 @@ function renderPlantInfo(data, searchType) {
   plantDiv.appendChild(commonName)
   plantDiv.appendChild(latinName)
 
-  ////adding what the user searched by, climate, category, or origin
-  if (searchType === "Climat") {
-    let climateType = document.createElement("p")
-    climateType.setAttribute("class", "climate")
-    climateType.innerHTML = `Climate: <br>${data["Climat"]}`
-    plantDiv.appendChild(climateType)
-  } else if (searchType === "Categories") {
-    let category = document.createElement("p")
-    category.setAttribute("class", "category")
-    category.innerHTML = `Category: <br>${data["Categories"]}`
-    plantDiv.appendChild(category)
-  } else if (searchType === "Origin") {
-    let origin = document.createElement("p")
-    origin.setAttribute("class", "origin")
-    origin.innerHTML = `Origin: <br>${data["Origin"][0]}`
-    plantDiv.appendChild(origin)
+  ////adding what the user searched by: climate, category, or origin. But ignore "name" because the name is put on all the cards.
+  if(searchType !== "name"){
+    console.log("inside IF")
+  const name = toTitleCase(getBetterName(searchType))
+  const searchTypeP = document.createElement("p")
+  searchTypeP.innerHTML = `${name}: <br>${data[searchType]}`
+  plantDiv.appendChild(searchTypeP)
   }
+
 
   /////putting it all in the plant Section
   plantSection.appendChild(plantDiv)
@@ -240,6 +232,9 @@ async function renderCareInstructions(name, id) {
   plantImage.setAttribute("loading", "lazy")
   plantImage.setAttribute("width", "150")
   plantImage.setAttribute("height", "150")
+  //////these two won't show up on the small screen
+  disease.setAttribute("class", "small-screen")
+  insects.setAttribute("class", "small-screen")
 
   //////get some info for these values:
   const heightInMeters = data["Height potential"]
@@ -286,14 +281,13 @@ async function renderCareInstructions(name, id) {
   careDiv.appendChild(closeBtn)
 
   /////// add careDiv to the body so it can pop up on top of the current cards
-
   document.body.appendChild(careDiv)
   closeBtn.addEventListener("click", function () {
     closeCareDiv(careDiv)
   })
 }
 
-//////diseases and insects have arrays
+//////diseases and insects have arrays which is awful because we all know one insect or disease is one too many. 
 function dealWithArrays(key) {
   formattedKey = ""
   if (Array.isArray(key)) {
@@ -304,6 +298,7 @@ function dealWithArrays(key) {
   return formattedKey
 }
 
+//////simple function for closing the pop-up care-div. Nice. 
 function closeCareDiv(careDiv) {
   careDiv.style.display = "none"
 }
@@ -444,25 +439,13 @@ function searchByDropdown(selectChoice, selectType) {
   }
 }
 
+function toTitleCase(str) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map(function (word) {
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(" ")
+}
 
-
-
-
-
-
-
-
-// function searchByOrigin(originSelect) {
-//   plantSection.innerHTML = ""
-//   for (let i = 0; i < plantData.length; i++) {
-//     const origin = plantData[i]["Origin"]
-//     if (Array.isArray(origin) && plantData[i]["Origin"][0] === originSelect) {
-//       renderPlantInfo(plantData[i], "origin")
-//     } else if (
-//       typeof origin === "string" &&
-//       plantData[i]["Origin"] === originSelect
-//     ) {
-//       renderPlantInfo(plantData[i], "origin")
-//     }
-//   }
-// }

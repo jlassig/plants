@@ -89,6 +89,9 @@ form label {
   font-size: 1em;
 
 }
+.small-screen{
+ display: none;
+}
 
 .identifiers {
   display: flex;
@@ -146,5 +149,8 @@ form label {
   }
   .identifiers {
     flex-direction: row;
+  }
+  .small-screen{
+   display: block;
   }
 }
