@@ -45,7 +45,7 @@ async function getSinglePlantData(id) {
   if (storedData) {
     try {
       const parsedData = JSON.parse(storedData)
-      // console.log(`This is in local storage:`, parsedData)
+      console.log(`This is in local storage:`, parsedData)
       return parsedData
     } catch (error) {
       console.error("Error parsing local storage data:", error)
@@ -57,7 +57,7 @@ async function getSinglePlantData(id) {
       const response = await fetch(url, options)
       const result = await response.json()
       localStorage.setItem(`ID = ${id}`, JSON.stringify(result))
-      // console.log(`This came from the API:`, result)
+      console.log(`This came from the API:`, result)
       return result
     } catch (error) {
       console.error("Error fetching data from API:", error)
@@ -298,7 +298,7 @@ function dealWithArrays(key) {
   return formattedKey
 }
 
-//////simple function for closing the pop-up care-div. Nice. 
+//////simple function for closing the pop-up carediv. Nice. 
 function closeCareDiv(careDiv) {
   careDiv.style.display = "none"
 }

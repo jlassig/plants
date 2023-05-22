@@ -87,10 +87,10 @@ form label {
   color: var(--white);
   padding: 1em 2em 2em 2em;
   font-size: 1em;
-
 }
-.small-screen{
- display: none;
+
+.small-screen {
+  display: none;
 }
 
 .identifiers {
@@ -141,16 +141,32 @@ form label {
     margin: -10px;
   }
   .care-div {
-    font-size: 1.3em;
-    top: 55%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    animation-duration: 1.5s;
+    animation-name: care-div;
+    animation-timing-function: cubic-bezier(0.26, 0.53, 0.74, 1.48);
+    font-size: 1.3em;
+
     border-radius: 20px;
+  }
+
+  @keyframes care-div {
+    0% {
+      opacity: 0;
+      /* transform: scale(0.5, 0.5); */
+    }
+
+    100% {
+      opacity: 1;
+      /* transform: scale(1, 1); */
+    }
   }
   .identifiers {
     flex-direction: row;
   }
-  .small-screen{
-   display: block;
+  .small-screen {
+    display: block;
   }
 }
