@@ -132,7 +132,9 @@ async function renderCareInstructions(name, id) {
 
   //////create elements
   const careDiv = document.createElement("div")
-  const commonName = document.createElement("p")
+  const identifiersDiv = document.createElement("div")
+  const plantImage = document.createElement("img")
+  const nameDiv = document.createElement("div")
   const lighting = document.createElement("p")
   const pruning = document.createElement("p")
   const watering = document.createElement("p")
@@ -147,11 +149,17 @@ async function renderCareInstructions(name, id) {
   //////set attributes for the elements
   careDiv.setAttribute("class", "care-div")
   careDiv.style.display = "block"
-  commonName.setAttribute("class", "care-name")
+  identifiersDiv.setAttribute("class", "identifiers")
+  nameDiv.setAttribute("class", "name-div")
   moreInfo.setAttribute("class", "more-info")
   moreInfo.setAttribute("href", data["Url"])
   moreInfo.setAttribute("target", "blank")
   closeBtn.setAttribute("class", "close-care-div")
+  plantImage.setAttribute("class", "care-image")
+  plantImage.setAttribute("src", data["Img"])
+  plantImage.setAttribute("loading", "lazy")
+  plantImage.setAttribute("width", "150")
+  plantImage.setAttribute("height", "150")
 
   //////get some info for these values:
   const heightInMeters = data["Height potential"]
@@ -169,7 +177,7 @@ async function renderCareInstructions(name, id) {
   const insectString = dealWithArrays(insectInfo)
 
   //////inner HTML for the elements:
-  commonName.innerHTML = `Common name: <br>${name}`
+  nameDiv.innerHTML = name
   lighting.innerHTML = `Ideal light: ${data["Light ideal"]}`
   pruning.innerHTML = `Pruning: ${data["Pruning"]}`
   watering.innerHTML = `Watering: ${data["Watering"]}`
@@ -179,16 +187,15 @@ async function renderCareInstructions(name, id) {
   insects.innerHTML = `Typical Insects: ${insectString}`
 
   moreInfo.innerHTML = "More Info"
-  closeBtn.innerHTML = "❌"
+  closeBtn.innerHTML = "X"
 
 
-  const warningSign = document.createElement("p")
-  warningSign.setAttribute("class", "warning")
-  warningSign.innerHTML="DEAR BRO. JAMES / TA, <br>Please don't click on the cards right now. I only have 500 per month. I am trying to save those for the final. "
 
   ////// add the things to CareDiv
-  careDiv.appendChild(warningSign)
-  careDiv.appendChild(commonName)
+
+  identifiersDiv.appendChild(plantImage)
+  identifiersDiv.appendChild(nameDiv)
+  careDiv.appendChild(identifiersDiv)
   careDiv.appendChild(lighting)
   careDiv.appendChild(pruning)
   careDiv.appendChild(watering)
@@ -201,6 +208,7 @@ async function renderCareInstructions(name, id) {
   careDiv.appendChild(closeBtn)
 
   /////// add careDiv to the body so it can pop up on top of the current cards
+  
   document.body.appendChild(careDiv)
   closeBtn.addEventListener("click", function () {
     closeCareDiv(careDiv)
@@ -235,7 +243,6 @@ function getHeightString(heightInfo) {
   }
 }
 
-
 function getTempString(min, max) {
   let tempString = ""
   if (min === null && max === null) {
@@ -254,8 +261,6 @@ function getTempString(min, max) {
   }
   return tempString
 }
-
-
 
 ////// searching by name fields
 const nameForm = document.getElementById("name-form")

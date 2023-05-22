@@ -2,10 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Ysabeau&display=swap"
+      rel="stylesheet" /> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Mogra&family=Ysabeau&display=swap"
       rel="stylesheet" />
     <link rel="stylesheet" href="styles/styles.css" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -18,56 +23,57 @@
     </header>
     <main>
       <form id="name-form" class="name-form">
-        <label for="plant-name">Enter common name of plant</label>
-        <input type="text" id="plant-name" name="plant-name"/>
+        <label for="plant-name">Search by common name of plant</label>
+        <input type="text" id="plant-name" name="plant-name" />
         <button type="submit" id="name-submit">Search</button>
       </form>
       <form class="search-form">
-       <div class="dropdown-wrapper">
-        <label for="climate-select">Choose a climate</label>
-        <select
-          id="climate-select"
-          name="climate-select"
-          class="climate-select">
-          <option disabled selected value="">Select an option</option>
-          <option value="Tropical">Tropical</option>
-          <option value="Subtropical">Subtropical</option>
-          <option value="Subtropical arid">Subtropical Arid</option>
-          <option value="Tropical humid">Tropical Humid</option>
-          <option value="Arid Tropical">Arid Tropical</option>
-        </select>
+        <div class="dropdown-wrapper">
+          <label for="climate-select">Search by climate</label>
+          <select
+            id="climate-select"
+            name="climate-select"
+            class="climate-select">
+            <option disabled selected value="">Select an option</option>
+            <option value="Tropical">Tropical</option>
+            <option value="Subtropical">Subtropical</option>
+            <option value="Subtropical arid">Subtropical Arid</option>
+            <option value="Tropical humid">Tropical Humid</option>
+            <option value="Arid Tropical">Arid Tropical</option>
+          </select>
         </div>
 
         <div class="dropdown-wrapper">
-        <label for="category-select">Choose a category</label>
-        <select
-          id="category-select"
-          name="category-select"
-          class="category-select">
-          <option disabled selected value="">Select an option</option>
-          <option value="Aglaonema">Aglaonema</option>
-          <option value="Anthurium">Anthurium</option>
-          <option value="Aralia">Aralia</option>
-          <option value="Bromeliad">Bromeliad</option>
-          <option value="Cactus & Succulent">Cactus & Succulent</option>
-          <option value="Dieffenbachia">Dieffenbachia</option>
-          <option value="Dracaena">Dracaena</option>
-          <option value="Fern">Fern</option>
-          <option value="Ficus">Ficus</option>
-          <option value="Flower">Flower</option>
-          <option value="Foliage plant">Foliage Plant</option>
-          <option value="Grass">Grass</option>
-          <option value="Ground Cover">Ground Cover</option>
-          <option value="Hanging">Hanging</option>
-          <option value="Palm">Palm</option>
-          <option value="Philodendron">Philodendron</option>
-          <option value="Sansevieria">Sansevieria</option>
-          <option value="Schefflera">Schefflera</option>
-          <option value="Spathiphyllum">Spathiphyllum</option>
-          <option value="Topiary">Topiary</option>
-          <option value="Other">Other</option>
-          <!-- perhaps add all the categories that have less than 5 to "other"  -->
-        </select></div>
+          <label for="category-select">Search by category</label>
+          <select
+            id="category-select"
+            name="category-select"
+            class="category-select">
+            <option disabled selected value="">Select an option</option>
+            <option value="Aglaonema">Aglaonema</option>
+            <option value="Anthurium">Anthurium</option>
+            <option value="Aralia">Aralia</option>
+            <option value="Bromeliad">Bromeliad</option>
+            <option value="Cactus & Succulent">Cactus & Succulent</option>
+            <option value="Dieffenbachia">Dieffenbachia</option>
+            <option value="Dracaena">Dracaena</option>
+            <option value="Fern">Fern</option>
+            <option value="Ficus">Ficus</option>
+            <option value="Flower">Flower</option>
+            <option value="Foliage plant">Foliage Plant</option>
+            <option value="Grass">Grass</option>
+            <option value="Ground Cover">Ground Cover</option>
+            <option value="Hanging">Hanging</option>
+            <option value="Palm">Palm</option>
+            <option value="Philodendron">Philodendron</option>
+            <option value="Sansevieria">Sansevieria</option>
+            <option value="Schefflera">Schefflera</option>
+            <option value="Spathiphyllum">Spathiphyllum</option>
+            <option value="Topiairy">Topiary</option>
+            <option value="Other">Other</option>
+            <!-- perhaps add all the categories that have less than 5 to "other"  -->
+          </select>
+        </div>
       </form>
 
       <section id="plant-section" class="plant-section"></section>
