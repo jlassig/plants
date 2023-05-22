@@ -87,7 +87,22 @@ form label {
   color: var(--white);
   padding: 1em 2em 2em 2em;
   font-size: 1em;
+  animation-duration: 1s;
+  animation-name: care-div;
+  animation-timing-function: cubic-bezier(0.26, 0.53, 0.74, 1.48);
 }
+ @keyframes care-div {
+    0% {
+      opacity: 0;
+      /* transform: scale(0.5, 0.5); */
+      transform: scale(-1, -1);
+    }
+
+    100% {
+      opacity: 1;
+      /* transform: scale(1, 1); */
+    }
+  }
 
 .small-screen {
   display: none;
@@ -141,28 +156,16 @@ form label {
     margin: -10px;
   }
   .care-div {
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
-    animation-duration: 1.5s;
-    animation-name: care-div;
-    animation-timing-function: cubic-bezier(0.26, 0.53, 0.74, 1.48);
+
     font-size: 1.3em;
 
     border-radius: 20px;
   }
 
-  @keyframes care-div {
-    0% {
-      opacity: 0;
-      /* transform: scale(0.5, 0.5); */
-    }
-
-    100% {
-      opacity: 1;
-      /* transform: scale(1, 1); */
-    }
-  }
+ 
   .identifiers {
     flex-direction: row;
   }
