@@ -91,18 +91,27 @@ form label {
   animation-name: care-div;
   animation-timing-function: cubic-bezier(0.26, 0.53, 0.74, 1.48);
 }
- @keyframes care-div {
-    0% {
-      opacity: 0;
-      transform: scale(0.5, 0.5);
-      /* transform: scale(-1, -1); */
-    }
 
-    100% {
-      opacity: 1;
-      /* transform: scale(1, 1); */
-    }
+/* see reference below */
+@keyframes care-div {
+  0% {
+    opacity: 0;
+    /* to just have it slowly fade in take out the transform:  */
+
+    /* fun but still conversative animation:  */
+    transform: scale(0.5, 0.5);
+
+    /* wilder animation: */
+    /* transform: scale(-1, -1); */
+
+    /* in your face animation: */
+    /* transform: scale(3, 3); */
   }
+
+  100% {
+    opacity: 1;
+  }
+}
 
 .small-screen {
   display: none;
@@ -134,6 +143,8 @@ form label {
   font-weight: bold;
 }
 
+
+
 .more-info {
   color: var(--white);
 }
@@ -159,13 +170,11 @@ form label {
     top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
-
     font-size: 1.3em;
 
     border-radius: 20px;
   }
 
- 
   .identifiers {
     flex-direction: row;
   }
@@ -173,3 +182,6 @@ form label {
     display: block;
   }
 }
+
+
+/* REference:  animation for care-div came from Here:   https://css-tricks.com/a-handy-little-system-for-animated-entrances-in-css/ */
