@@ -1,8 +1,8 @@
 ////GET all plants (lite)
 
 const url = "https://house-plants2.p.rapidapi.com/all-lite"
-
-const plantSection = document.getElementById("plant-section")
+const plantSection = document.querySelector("#plant-section")
+const searchForm = document.querySelector("#search-form")
 
 const options = {
   method: "GET",
@@ -10,32 +10,6 @@ const options = {
     "X-RapidAPI-Key": "f2a4a9ae1amsh1f993993744a5c0p1d80e7jsn459d2fc1500d",
     "X-RapidAPI-Host": "house-plants2.p.rapidapi.com",
   },
-}
-
-async function getSinglePlantData(id) {
-  const storedData = localStorage.getItem(`ID = ${id}`)
-  //////Is the data already in local storage???
-  if (storedData) {
-    try {
-      const parsedData = JSON.parse(storedData)
-      console.log(`This is in local storage:`, parsedData)
-      return parsedData
-    } catch (error) {
-      console.error("Error parsing local storage data:", error)
-      localStorage.removeItem(`ID = ${id}`)
-    }
-  } else {
-    const url = `https://house-plants2.p.rapidapi.com/id/${id}`
-    try {
-      const response = await fetch(url, options)
-      const result = await response.json()
-      localStorage.setItem(`ID = ${id}`, JSON.stringify(result))
-      console.log(`This came from the API:`, result)
-      return result
-    } catch (error) {
-      console.error("Error fetching data from API:", error)
-    }
-  }
 }
 
 function getPlantData() {
@@ -61,8 +35,109 @@ async function getPlantAPI() {
     console.error(error)
   }
 }
-
+//////this data is used for MOST things
 const plantData = getPlantData()
+
+//////To get the care instructions for a single plant, I have to use the getById request:
+async function getSinglePlantData(id) {
+  const storedData = localStorage.getItem(`ID = ${id}`)
+  //////Is the ID for the single plant already in local storage???
+  if (storedData) {
+    try {
+      const parsedData = JSON.parse(storedData)
+      console.log(`This is in local storage:`, parsedData)
+      return parsedData
+    } catch (error) {
+      console.error("Error parsing local storage data:", error)
+      localStorage.removeItem(`ID = ${id}`)
+    }
+  } else {
+    const url = `https://house-plants2.p.rapidapi.com/id/${id}`
+    try {
+      const response = await fetch(url, options)
+      const result = await response.json()
+      localStorage.setItem(`ID = ${id}`, JSON.stringify(result))
+      console.log(`This came from the API:`, result)
+      return result
+    } catch (error) {
+      console.error("Error fetching data from API:", error)
+    }
+  }
+}
+
+//////getting the array for the dropdowns for Climate, Category and Origin
+function getSearchArray(searchType) {
+  let searchTypeArray = []
+  for (let i = 0; i < plantData.length; i++) {
+    //////sometimes the datatype for searchType is an array (like in the "Origin")
+    if (Array.isArray(plantData[i][searchType])) {
+      if (!searchTypeArray.includes(plantData[i][searchType][0])) {
+        searchTypeArray.push(plantData[i][searchType][0])
+      }
+      ///////usually the datatype for searchType is just a string, so we handle it thus:
+    } else {
+      if (!searchTypeArray.includes(plantData[i][searchType])) {
+        searchTypeArray.push(plantData[i][searchType])
+      }
+    }
+  }
+  searchTypeArray.sort()
+  let name = getBetterName(searchType)
+
+  renderDropdowns(searchTypeArray, name)
+}
+
+//////putting the dropdowns in dynamically, instead of through HTML
+function renderDropdowns(optionsArray, name) {
+  const nameLower = getBetterName(name)
+  const searchName = `${nameLower}-select`
+  const wrapper = document.createElement("div")
+  const label = document.createElement("label")
+  const select = document.createElement("select")
+  const blankOption = document.createElement("option")
+
+  wrapper.setAttribute("class", "dropdown-wrapper")
+  label.setAttribute("for", searchName)
+  label.innerHTML = `Search by ${nameLower}`
+  select.setAttribute("id", searchName)
+  select.setAttribute("name", searchName)
+  select.setAttribute("class", searchName)
+
+  blankOption.setAttribute("value", "")
+  blankOption.disabled = true
+  blankOption.selected = true
+  blankOption.innerHTML = "Select an option"
+  select.appendChild(blankOption)
+
+  for (let i = 0; i < optionsArray.length; i++) {
+    const option = document.createElement("option")
+    option.setAttribute("value", optionsArray[i])
+    option.innerHTML = optionsArray[i]
+    select.appendChild(option)
+  }
+  searchForm.appendChild(wrapper)
+  wrapper.appendChild(label)
+  wrapper.appendChild(select)
+}
+//////have the selects already been added to the Search form?
+if (searchForm.childElementCount === 0) {
+  getSearchArray("Climat")
+  getSearchArray("Categories")
+  getSearchArray("Origin")
+}
+
+//////
+function getBetterName(searchType) {
+  let name = ""
+  if (searchType == "Climat") {
+    name = "climate"
+  } else if (searchType == "Categories") {
+    name = "category"
+  } else {
+    name = searchType.toLowerCase()
+  }
+  return name
+}
 
 function renderPlantInfo(data, searchType) {
   ////create elements
@@ -109,7 +184,7 @@ function renderPlantInfo(data, searchType) {
   plantDiv.appendChild(commonName)
   plantDiv.appendChild(latinName)
 
-  ////adding what the user searched by, climate or category
+  ////adding what the user searched by, climate, category, or origin
   if (searchType === "climate") {
     let climateType = document.createElement("p")
     climateType.setAttribute("class", "climate")
@@ -120,6 +195,11 @@ function renderPlantInfo(data, searchType) {
     category.setAttribute("class", "category")
     category.innerHTML = `Category: <br>${data["Categories"]}`
     plantDiv.appendChild(category)
+  } else if (searchType === "origin") {
+    let origin = document.createElement("p")
+    origin.setAttribute("class", "origin")
+    origin.innerHTML = `Origin: <br>${data["Origin"][0]}`
+    plantDiv.appendChild(origin)
   }
 
   /////putting it all in the plant Section
@@ -189,8 +269,6 @@ async function renderCareInstructions(name, id) {
   moreInfo.innerHTML = "More Info"
   closeBtn.innerHTML = "X"
 
-
-
   ////// add the things to CareDiv
 
   identifiersDiv.appendChild(plantImage)
@@ -208,7 +286,7 @@ async function renderCareInstructions(name, id) {
   careDiv.appendChild(closeBtn)
 
   /////// add careDiv to the body so it can pop up on top of the current cards
-  
+
   document.body.appendChild(careDiv)
   closeBtn.addEventListener("click", function () {
     closeCareDiv(careDiv)
@@ -263,17 +341,19 @@ function getTempString(min, max) {
 }
 
 ////// searching by name fields
-const nameForm = document.getElementById("name-form")
-const nameSelect = document.getElementById("plant-name")
+const nameForm = document.querySelector("#name-form")
+const nameSelect = document.querySelector("#plant-name")
 ////// the dropdowns:
-const climateSelect = document.getElementById("climate-select")
-const categorySelect = document.getElementById("category-select")
+const climateSelect = document.querySelector("#climate-select")
+const categorySelect = document.querySelector("#category-select")
+const originSelect = document.querySelector("#origin-select")
 
 //////Searching by name:
 nameForm.addEventListener("submit", function (event) {
   event.preventDefault()
   climateSelect.value = ""
   categorySelect.value = ""
+  originSelect.value = ""
   const nameValue = nameSelect.value.toUpperCase()
   if (nameSelect.value == "") {
     searchByName(nameValue, true)
@@ -317,6 +397,7 @@ function searchByName(nameValue, blankName) {
 climateSelect.addEventListener("change", function () {
   categorySelect.value = ""
   nameSelect.value = ""
+  originSelect.value = ""
   const selectedClimate = this.value
   if (selectedClimate !== "") {
     searchByClimate(selectedClimate)
@@ -336,6 +417,7 @@ function searchByClimate(climateSelect) {
 //////searching by category:
 categorySelect.addEventListener("change", function () {
   climateSelect.value = ""
+  originSelect.value = ""
   nameSelect.value = ""
   const selectedCategory = this.value
   if (selectedCategory !== "") {
@@ -348,6 +430,32 @@ function searchByCategory(category) {
   for (let i = 0; i < plantData.length; i++) {
     if (plantData[i]["Categories"] === category) {
       renderPlantInfo(plantData[i], "category")
+    }
+  }
+}
+
+////search by origin
+originSelect.addEventListener("change", function () {
+  categorySelect.value = ""
+  climateSelect.value = ""
+  nameSelect.value = ""
+  const selectedOrigin = this.value
+  if (selectedOrigin !== "") {
+    searchByOrigin(selectedOrigin)
+  }
+})
+
+function searchByOrigin(originSelect) {
+  plantSection.innerHTML = ""
+  for (let i = 0; i < plantData.length; i++) {
+    const origin = plantData[i]["Origin"]
+    if (Array.isArray(origin) && plantData[i]["Origin"][0] === originSelect) {
+      renderPlantInfo(plantData[i], "origin")
+    } else if (
+      typeof origin === "string" &&
+      plantData[i]["Origin"] === originSelect
+    ) {
+      renderPlantInfo(plantData[i], "origin")
     }
   }
 }

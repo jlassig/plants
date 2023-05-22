@@ -12,7 +12,6 @@
   --white: #ececec;
 }
 
-
 header {
   text-align: center;
   font-size: 2em;
@@ -30,7 +29,8 @@ header {
 }
 
 .climate-select,
-.category-select {
+.category-select,
+.origin-select {
   padding: 0.5em;
 }
 
@@ -41,15 +41,16 @@ form label {
   display: flex;
   flex-direction: column;
 }
-.search-form div {
+.dropdown-wrapper {
   margin-bottom: 1em;
-}
+
+} 
+
 .plant-section {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 25px;
- 
 }
 
 .plant-div {
@@ -60,12 +61,11 @@ form label {
   background-color: var(--secondary);
   font-family: var(--paragraph);
   cursor: pointer;
-  transition: transform .2s;
+  transition: transform 0.2s;
 }
 
-.plant-div:hover{
-transform: scale(1.05);
-
+.plant-div:hover {
+  transform: scale(1.05);
 }
 
 .common-name {
@@ -87,22 +87,19 @@ transform: scale(1.05);
   font-size: 1.3em;
 }
 
-
-.identifiers{
- display: flex;
- flex-direction: row;
- align-items: center;
- justify-content: center;
- 
+.identifiers {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
-.name-div{
-   font-family: var(--heading);
+.name-div {
+  font-family: var(--heading);
   font-weight: bold;
-  font-size: 1.2em; 
+  font-size: 1.2em;
   margin-left: 20px;
 }
-
 
 .close-care-div {
   display: block;
@@ -129,11 +126,11 @@ transform: scale(1.05);
     flex-direction: row;
     justify-content: space-around;
   }
-  .plant-div{
-     width: 270px;
+  .plant-div {
+    width: 270px;
   }
-  .plant-div:hover{
-   border: 10px solid var(--black);
-   margin: -10px;
+  .plant-div:hover {
+    border: 10px solid var(--black);
+    margin: -10px;
   }
 }
