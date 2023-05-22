@@ -185,17 +185,17 @@ function renderPlantInfo(data, searchType) {
   plantDiv.appendChild(latinName)
 
   ////adding what the user searched by, climate, category, or origin
-  if (searchType === "climate") {
+  if (searchType === "Climat") {
     let climateType = document.createElement("p")
     climateType.setAttribute("class", "climate")
     climateType.innerHTML = `Climate: <br>${data["Climat"]}`
     plantDiv.appendChild(climateType)
-  } else if (searchType === "category") {
+  } else if (searchType === "Categories") {
     let category = document.createElement("p")
     category.setAttribute("class", "category")
     category.innerHTML = `Category: <br>${data["Categories"]}`
     plantDiv.appendChild(category)
-  } else if (searchType === "origin") {
+  } else if (searchType === "Origin") {
     let origin = document.createElement("p")
     origin.setAttribute("class", "origin")
     origin.innerHTML = `Origin: <br>${data["Origin"][0]}`
@@ -292,6 +292,8 @@ async function renderCareInstructions(name, id) {
     closeCareDiv(careDiv)
   })
 }
+
+//////diseases and insects have arrays
 function dealWithArrays(key) {
   formattedKey = ""
   if (Array.isArray(key)) {
@@ -321,6 +323,7 @@ function getHeightString(heightInfo) {
   }
 }
 
+//////sometimes the temperature that is returned doesn't have a Min or maybe it doesn't have a Max. uggggh. Here is how we deal with that:
 function getTempString(min, max) {
   let tempString = ""
   if (min === null && max === null) {
@@ -400,19 +403,9 @@ climateSelect.addEventListener("change", function () {
   originSelect.value = ""
   const selectedClimate = this.value
   if (selectedClimate !== "") {
-    searchByClimate(selectedClimate)
+    searchByDropdown(selectedClimate, "Climat")
   }
 })
-
-function searchByClimate(climateSelect) {
-  plantSection.innerHTML = ""
-  for (let i = 0; i < plantData.length; i++) {
-    ////"Climat" is NOT misspelled here. This is how it is spelled in the API.
-    if (plantData[i]["Climat"] === climateSelect) {
-      renderPlantInfo(plantData[i], "climate")
-    }
-  }
-}
 
 //////searching by category:
 categorySelect.addEventListener("change", function () {
@@ -421,18 +414,9 @@ categorySelect.addEventListener("change", function () {
   nameSelect.value = ""
   const selectedCategory = this.value
   if (selectedCategory !== "") {
-    searchByCategory(selectedCategory)
+    searchByDropdown(selectedCategory, "Categories")
   }
 })
-
-function searchByCategory(category) {
-  plantSection.innerHTML = ""
-  for (let i = 0; i < plantData.length; i++) {
-    if (plantData[i]["Categories"] === category) {
-      renderPlantInfo(plantData[i], "category")
-    }
-  }
-}
 
 ////search by origin
 originSelect.addEventListener("change", function () {
@@ -441,21 +425,44 @@ originSelect.addEventListener("change", function () {
   nameSelect.value = ""
   const selectedOrigin = this.value
   if (selectedOrigin !== "") {
-    searchByOrigin(selectedOrigin)
+    searchByDropdown(selectedOrigin, "Origin")
   }
 })
 
-function searchByOrigin(originSelect) {
+function searchByDropdown(selectChoice, selectType) {
   plantSection.innerHTML = ""
   for (let i = 0; i < plantData.length; i++) {
-    const origin = plantData[i]["Origin"]
-    if (Array.isArray(origin) && plantData[i]["Origin"][0] === originSelect) {
-      renderPlantInfo(plantData[i], "origin")
-    } else if (
-      typeof origin === "string" &&
-      plantData[i]["Origin"] === originSelect
+    ///////Because sometimes the value for the selectType is an Array (like "Origin")
+    if (
+      Array.isArray(plantData[i][selectType]) &&
+      plantData[i][selectType][0] === selectChoice
     ) {
-      renderPlantInfo(plantData[i], "origin")
+      renderPlantInfo(plantData[i], selectType)
+    } else if (plantData[i][selectType] === selectChoice) {
+      renderPlantInfo(plantData[i], selectType)
     }
   }
 }
+
+
+
+
+
+
+
+
+
+// function searchByOrigin(originSelect) {
+//   plantSection.innerHTML = ""
+//   for (let i = 0; i < plantData.length; i++) {
+//     const origin = plantData[i]["Origin"]
+//     if (Array.isArray(origin) && plantData[i]["Origin"][0] === originSelect) {
+//       renderPlantInfo(plantData[i], "origin")
+//     } else if (
+//       typeof origin === "string" &&
+//       plantData[i]["Origin"] === originSelect
+//     ) {
+//       renderPlantInfo(plantData[i], "origin")
+//     }
+//   }
+// }

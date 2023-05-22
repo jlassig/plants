@@ -82,11 +82,9 @@ form label {
   display: block;
   position: fixed;
   top: 0%;
-  left: 0%;
   background-color: var(--primary);
   font-family: var(--paragraph);
   color: var(--white);
-  /* font-weight: bold; */
   padding: 1em 2em 2em 2em;
   font-size: 1em;
 
