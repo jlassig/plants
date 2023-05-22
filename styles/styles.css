@@ -30,12 +30,18 @@ header {
 
 .climate-select,
 .category-select,
-.origin-select {
+.origin-select,
+.plant-name {
   padding: 0.5em;
 }
 
 form label {
   display: block;
+  font-size: 1.3em;
+}
+.name-submit {
+  margin-left: 5px;
+  padding: 0.5em;
 }
 .search-form {
   display: flex;
@@ -43,8 +49,7 @@ form label {
 }
 .dropdown-wrapper {
   margin-bottom: 1em;
-
-} 
+}
 
 .plant-section {
   display: flex;
@@ -76,20 +81,20 @@ form label {
 .care-div {
   display: block;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0%;
+  left: 0%;
   background-color: var(--primary);
   font-family: var(--paragraph);
   color: var(--white);
   /* font-weight: bold; */
   padding: 1em 2em 2em 2em;
-  font-size: 1.3em;
+  font-size: 1em;
+
 }
 
 .identifiers {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -128,9 +133,20 @@ form label {
   }
   .plant-div {
     width: 270px;
+    border-radius: 20px;
   }
   .plant-div:hover {
     border: 10px solid var(--black);
     margin: -10px;
+  }
+  .care-div {
+    font-size: 1.3em;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+  }
+  .identifiers {
+    flex-direction: row;
   }
 }
