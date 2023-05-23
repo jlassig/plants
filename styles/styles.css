@@ -14,13 +14,16 @@
 
 header {
   text-align: center;
-  font-size: 2em;
+  font-size: 1em;
   font-family: var(--heading);
   background-color: var(--primary);
   color: var(--white);
 
 }
 
+.search-form{
+ margin-bottom: 2em;
+}
 .search-form,
 .name-form {
   border: 2px solid var(--black);
@@ -167,10 +170,12 @@ form label {
   }
   header{
    border-radius: 20px;
+   font-size: 2em;
   }
  .search-form{
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
+
 
  }
 .name-form{
