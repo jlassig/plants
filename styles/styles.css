@@ -18,6 +18,7 @@ header {
   font-family: var(--heading);
   background-color: var(--primary);
   color: var(--white);
+
 }
 
 .search-form,
@@ -76,6 +77,16 @@ form label {
 .common-name {
   font-size: 1.2em;
   font-weight: bold;
+}
+
+.warning{
+ font-size: 2em;
+ font-family: var(--paragraph);
+ color: red;
+ border: 4px solid red;
+ margin: 1em;
+ padding: 1em;
+ font-weight: bold;
 }
 
 .care-div {
@@ -154,6 +165,19 @@ form label {
     max-width: 80%;
     margin: auto;
   }
+  header{
+   border-radius: 20px;
+  }
+ .search-form{
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+
+ }
+.name-form{
+ border-top-left-radius: 20px;
+ border-top-right-radius: 20px;
+
+}
   .search-form {
     flex-direction: row;
     justify-content: space-around;

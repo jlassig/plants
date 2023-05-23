@@ -185,14 +185,13 @@ function renderPlantInfo(data, searchType) {
   plantDiv.appendChild(latinName)
 
   ////adding what the user searched by: climate, category, or origin. But ignore "name" because the name is put on all the cards.
-  if(searchType !== "name"){
+  if (searchType !== "name") {
     console.log("inside IF")
-  const name = toTitleCase(getBetterName(searchType))
-  const searchTypeP = document.createElement("p")
-  searchTypeP.innerHTML = `${name}: <br>${data[searchType]}`
-  plantDiv.appendChild(searchTypeP)
+    const name = toTitleCase(getBetterName(searchType))
+    const searchTypeP = document.createElement("p")
+    searchTypeP.innerHTML = `${name}: <br>${data[searchType]}`
+    plantDiv.appendChild(searchTypeP)
   }
-
 
   /////putting it all in the plant Section
   plantSection.appendChild(plantDiv)
@@ -287,7 +286,7 @@ async function renderCareInstructions(name, id) {
   })
 }
 
-//////diseases and insects have arrays which is awful because we all know one insect or disease is one too many. 
+//////diseases and insects have arrays which is awful because we all know one insect or disease is one too many.
 function dealWithArrays(key) {
   formattedKey = ""
   if (Array.isArray(key)) {
@@ -298,7 +297,7 @@ function dealWithArrays(key) {
   return formattedKey
 }
 
-//////simple function for closing the pop-up carediv. Nice. 
+//////simple function for closing the pop-up care div. Nice.
 function closeCareDiv(careDiv) {
   careDiv.style.display = "none"
 }
@@ -352,15 +351,17 @@ nameForm.addEventListener("submit", function (event) {
   climateSelect.value = ""
   categorySelect.value = ""
   originSelect.value = ""
-  const nameValue = nameSelect.value.toUpperCase()
+  const originalName = nameSelect.value
+  const nameValue = originalName.toUpperCase()
   if (nameSelect.value == "") {
-    searchByName(nameValue, true)
+    searchByName(nameValue, true, originalName)
   } else {
-    searchByName(nameValue, false)
+    searchByName(nameValue, false, originalName)
   }
 })
 
-function searchByName(nameValue, blankName) {
+function searchByName(nameValue, blankName, originalName) {
+  let unknownPlant = true;
   plantSection.innerHTML = ""
   for (let i = 0; i < plantData.length; i++) {
     const commonName = plantData[i]["Common name"]
@@ -371,6 +372,7 @@ function searchByName(nameValue, blankName) {
         (Array.isArray(commonName) && commonName.length === 0)
       ) {
         renderPlantInfo(plantData[i], "name")
+        unknownPlant = false;
       }
       //////The following code is because the Common Name in the API pulls back either an Array or a String
     } else {
@@ -380,15 +382,29 @@ function searchByName(nameValue, blankName) {
         commonName.some((name) => name.toUpperCase().includes(nameValue))
       ) {
         renderPlantInfo(plantData[i], "name")
+        unknownPlant = false
       } else if (
         ///// else if the Common Name is a string, then do this one.
         typeof commonName === "string" &&
         commonName.toUpperCase().includes(nameValue)
       ) {
         renderPlantInfo(plantData[i], "name")
-      }
+        unknownPlant = false
+      } 
     }
   }
+  //////in case the user puts in a name for a plant that is not in the database
+  if (unknownPlant) {
+    printWarningSign(originalName)
+  }
+
+}
+
+function printWarningSign(nameValue) {
+  const warningDiv = document.createElement("div")
+  warningDiv.setAttribute("class", "warning")
+  warningDiv.innerHTML = `"${nameValue}" is not in the database. Please try again.`
+  plantSection.appendChild(warningDiv)
 }
 
 /////Searching by climate:
@@ -448,4 +464,3 @@ function toTitleCase(str) {
     })
     .join(" ")
 }
-
