@@ -1,3 +1,5 @@
+
+
 ////GET all plants (lite)
 
 const url = "https://house-plants2.p.rapidapi.com/all-lite"
@@ -186,7 +188,6 @@ function renderPlantInfo(data, searchType) {
 
   ////adding what the user searched by: climate, category, or origin. But ignore "name" because the name is put on all the cards.
   if (searchType !== "name") {
-    console.log("inside IF")
     const name = toTitleCase(getBetterName(searchType))
     const searchTypeP = document.createElement("p")
     searchTypeP.innerHTML = `${name}: <br>${data[searchType]}`
