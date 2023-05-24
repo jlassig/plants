@@ -1,5 +1,3 @@
-
-
 ////GET all plants (lite)
 
 const url = "https://house-plants2.p.rapidapi.com/all-lite"
@@ -18,6 +16,7 @@ function getPlantData() {
   const storedData = localStorage.getItem("plantData")
   //////Is the data already in local storage???
   if (storedData) {
+    console.log("pulling from local")
     const parsedData = JSON.parse(storedData)
     // console.log(parsedData)
     return parsedData
@@ -39,6 +38,13 @@ async function getPlantAPI() {
 }
 //////this data is used for MOST things
 const plantData = getPlantData()
+
+//////have the selects already been added to the Search form?
+if (searchForm.childElementCount === 0) {
+  getSearchArray("Climat")
+  getSearchArray("Categories")
+  getSearchArray("Origin")
+}
 
 //////To get the care instructions for a single plant, I have to use the getById request:
 async function getSinglePlantData(id) {
@@ -120,12 +126,6 @@ function renderDropdowns(optionsArray, name) {
   searchForm.appendChild(wrapper)
   wrapper.appendChild(label)
   wrapper.appendChild(select)
-}
-//////have the selects already been added to the Search form?
-if (searchForm.childElementCount === 0) {
-  getSearchArray("Climat")
-  getSearchArray("Categories")
-  getSearchArray("Origin")
 }
 
 //////ugggh, I hated how climate was misspelled, categories wasn't category and Origin is capitalized. so here is where I fix them.
@@ -362,7 +362,7 @@ nameForm.addEventListener("submit", function (event) {
 })
 
 function searchByName(nameValue, blankName, originalName) {
-  let unknownPlant = true;
+  let unknownPlant = true
   plantSection.innerHTML = ""
   for (let i = 0; i < plantData.length; i++) {
     const commonName = plantData[i]["Common name"]
@@ -373,7 +373,7 @@ function searchByName(nameValue, blankName, originalName) {
         (Array.isArray(commonName) && commonName.length === 0)
       ) {
         renderPlantInfo(plantData[i], "name")
-        unknownPlant = false;
+        unknownPlant = false
       }
       //////The following code is because the Common Name in the API pulls back either an Array or a String
     } else {
@@ -391,14 +391,13 @@ function searchByName(nameValue, blankName, originalName) {
       ) {
         renderPlantInfo(plantData[i], "name")
         unknownPlant = false
-      } 
+      }
     }
   }
   //////in case the user puts in a name for a plant that is not in the database
   if (unknownPlant) {
     printWarningSign(originalName)
   }
-
 }
 
 function printWarningSign(nameValue) {
