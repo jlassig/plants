@@ -33,7 +33,10 @@ async function getPlantAPI() {
     const response = await fetch(url, options)
     const result = await response.json()
     localStorage.setItem("plantData", JSON.stringify(result))
-    return result
+    //////parsing the info that we just got from the api
+    const storedData = localStorage.getItem("plantData")
+    const parsedData = JSON.parse(storedData)
+    return parsedData
   } catch (error) {
     console.error(error)
   }
