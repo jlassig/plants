@@ -70,7 +70,7 @@ async function getSinglePlantData(id) {
       console.log(`This came from the API:`, result)
       return result
     } catch (error) {
-      console.error("Error fetching data from API:", error)
+      console.error("Error getting data from API:", error)
     }
   }
 }
