@@ -15,7 +15,6 @@ const options = {
 
 
 async function getPlantData() {
-
   const storedData = localStorage.getItem("plantData")
   //////Is the data already in local storage???
   if (storedData) {
