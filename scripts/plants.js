@@ -12,8 +12,6 @@ const options = {
     "X-RapidAPI-Host": "house-plants2.p.rapidapi.com",
   },
 }
-
-
 async function getPlantData() {
   const storedData = localStorage.getItem("plantData")
   //////Is the data already in local storage???
@@ -28,10 +26,6 @@ async function getPlantData() {
     return await getPlantAPI()
   }
 }
-
-
-            // localStorage.removeItem(`plantData`)
-            // console.log("deleted from local")
 
 async function getPlantAPI() {
   try {
