@@ -1,6 +1,7 @@
+const url = "https://house-plants2.p.rapidapi.com/all-lite"
+
 ////GET all plants (lite)
 
-const url = "https://house-plants2.p.rapidapi.com/all-lite"
 const plantSection = document.querySelector("#plant-section")
 const searchForm = document.querySelector("#search-form")
 
@@ -12,22 +13,30 @@ const options = {
   },
 }
 
-function getPlantData() {
+
+async function getPlantData() {
+
   const storedData = localStorage.getItem("plantData")
   //////Is the data already in local storage???
   if (storedData) {
     console.log("pulling from local")
     const parsedData = JSON.parse(storedData)
-    // console.log(parsedData)
+    /// console.log(parsedData)
     return parsedData
+    // localStorage.removeItem(`plantData`)
   } else {
     /////// Fetch the data from the API if not available in local storage
-    getPlantAPI()
+    return await getPlantAPI()
   }
 }
 
+
+            // localStorage.removeItem(`plantData`)
+            // console.log("deleted from local")
+
 async function getPlantAPI() {
   try {
+    console.log("getting plant data from the API")
     const response = await fetch(url, options)
     const result = await response.json()
     localStorage.setItem("plantData", JSON.stringify(result))
