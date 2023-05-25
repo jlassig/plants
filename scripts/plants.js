@@ -1,8 +1,9 @@
 ////GET all plants (lite)
 
-const url = "https://house-plants2.p.rapidapi.com/all-lite"
+// const url = "https://house-plants2.p.rapidapi.com/all-lite"
 const plantSection = document.querySelector("#plant-section")
 const searchForm = document.querySelector("#search-form")
+let renderedSearchBoxes = false
 
 const options = {
   method: "GET",
@@ -12,31 +13,49 @@ const options = {
   },
 }
 
-function getPlantData() {
+//////this data is used for MOST things
+async function fetchData() {
+  const plantData = await getPlantData()
+  //////have the selects already been added to the Search form?
+  if (searchForm.childElementCount === 0) {
+    getSearchArray("Climat", plantData)
+    getSearchArray("Categories", plantData)
+    getSearchArray("Origin", plantData)
+    renderedSearchBoxes = true
+  }
+
+  return plantData
+}
+
+const plantData = fetchData()
+
+async function getPlantData() {
   const storedData = localStorage.getItem("plantData")
   //////Is the data already in local storage???
   if (storedData) {
-    const parsedData = JSON.parse(storedData)
-    // console.log(parsedData)
-    return parsedData
+    try {
+      const parsedData = JSON.parse(storedData)
+      console.log("plantData from local storage")
+      console.log(parsedData)
+      return parsedData
+    } catch (error) {
+      console.error("Error parsing local storage data:", error)
+    }
   } else {
+    const url = "https://house-plants2.p.rapidapi.com/all-lite"
     /////// Fetch the data from the API if not available in local storage
-    getPlantAPI()
+    try {
+      const response = await fetch(url, options)
+      const result = await response.json()
+      localStorage.setItem("plantData", JSON.stringify(result))
+      console.log("plantData came from the API")
+      console.log(result)
+      return result
+    } catch (error) {
+      console.error("Error fetching data from API", error)
+    }
   }
 }
-
-async function getPlantAPI() {
-  try {
-    const response = await fetch(url, options)
-    const result = await response.json()
-    localStorage.setItem("plantData", JSON.stringify(result))
-    return result
-  } catch (error) {
-    console.error(error)
-  }
-}
-//////this data is used for MOST things
-const plantData = getPlantData()
 
 //////To get the care instructions for a single plant, I have to use the getById request:
 async function getSinglePlantData(id) {
@@ -66,18 +85,18 @@ async function getSinglePlantData(id) {
 }
 
 //////getting the array for the dropdowns for Climate, Category and Origin
-function getSearchArray(searchType) {
+function getSearchArray(searchType, plantInfo) {
   let searchTypeArray = []
-  for (let i = 0; i < plantData.length; i++) {
+  for (let i = 0; i < plantInfo.length; i++) {
     //////sometimes the datatype for searchType is an array (like in the "Origin")
-    if (Array.isArray(plantData[i][searchType])) {
-      if (!searchTypeArray.includes(plantData[i][searchType][0])) {
-        searchTypeArray.push(plantData[i][searchType][0])
+    if (Array.isArray(plantInfo[i][searchType])) {
+      if (!searchTypeArray.includes(plantInfo[i][searchType][0])) {
+        searchTypeArray.push(plantInfo[i][searchType][0])
       }
       ///////usually the datatype for searchType is just a string, so we handle it thus:
     } else {
-      if (!searchTypeArray.includes(plantData[i][searchType])) {
-        searchTypeArray.push(plantData[i][searchType])
+      if (!searchTypeArray.includes(plantInfo[i][searchType])) {
+        searchTypeArray.push(plantInfo[i][searchType])
       }
     }
   }
@@ -118,12 +137,6 @@ function renderDropdowns(optionsArray, name) {
   searchForm.appendChild(wrapper)
   wrapper.appendChild(label)
   wrapper.appendChild(select)
-}
-//////have the selects already been added to the Search form?
-if (searchForm.childElementCount === 0) {
-  getSearchArray("Climat")
-  getSearchArray("Categories")
-  getSearchArray("Origin")
 }
 
 //////ugggh, I hated how climate was misspelled, categories wasn't category and Origin is capitalized. so here is where I fix them.
@@ -340,21 +353,26 @@ function getTempString(min, max) {
 const nameForm = document.querySelector("#name-form")
 const nameSelect = document.querySelector("#plant-name")
 ////// the dropdowns:
-const climateSelect = document.querySelector("#climate-select")
-const categorySelect = document.querySelector("#category-select")
-const originSelect = document.querySelector("#origin-select")
+// const climateSelect = document.querySelector("#climate-select")
+// const categorySelect = document.querySelector("#category-select")
+// const originSelect = document.querySelector("#origin-select")
 
 //////Searching by name:
 nameForm.addEventListener("submit", function (event) {
   event.preventDefault()
+  const climateSelect = document.querySelector("#climate-select")
+  const categorySelect = document.querySelector("#category-select")
+  const originSelect = document.querySelector("#origin-select")
   climateSelect.value = ""
   categorySelect.value = ""
   originSelect.value = ""
   const originalName = nameSelect.value
   const nameValue = originalName.toUpperCase()
   if (nameSelect.value == "") {
+
     searchByName(nameValue, true, originalName)
   } else {
+        console.log(nameSelect.value)
     searchByName(nameValue, false, originalName)
   }
 })
@@ -363,6 +381,7 @@ function searchByName(nameValue, blankName, originalName) {
   let unknownPlant = true
   plantSection.innerHTML = ""
   for (let i = 0; i < plantData.length; i++) {
+
     const commonName = plantData[i]["Common name"]
     ////// "blankName" is for when the input box is blank and user clicks "submit". The reason I put this in here is because there are quite a few plants where the Common Name is blank. This pulls those plants up.
     if (blankName) {
@@ -406,37 +425,52 @@ function printWarningSign(nameValue) {
 }
 
 /////Searching by climate:
-climateSelect.addEventListener("change", function () {
-  categorySelect.value = ""
-  nameSelect.value = ""
-  originSelect.value = ""
-  const selectedClimate = this.value
-  if (selectedClimate !== "") {
-    searchByDropdown(selectedClimate, "Climat")
-  }
-})
+if (renderedSearchBoxes == true) {
+  const climateSelect = document.querySelector("#climate-select")
+  const categorySelect = document.querySelector("#category-select")
+  const originSelect = document.querySelector("#origin-select")
+  climateSelect.addEventListener("change", function () {
+    categorySelect.value = ""
+    nameSelect.value = ""
+    originSelect.value = ""
+    const selectedClimate = this.value
+    if (selectedClimate !== "") {
+      searchByDropdown(selectedClimate, "Climat")
+    }
+  })
+}
 
 //////searching by category:
-categorySelect.addEventListener("change", function () {
-  climateSelect.value = ""
-  originSelect.value = ""
-  nameSelect.value = ""
-  const selectedCategory = this.value
-  if (selectedCategory !== "") {
-    searchByDropdown(selectedCategory, "Categories")
-  }
-})
+if (renderedSearchBoxes) {
+  const climateSelect = document.querySelector("#climate-select")
+  const categorySelect = document.querySelector("#category-select")
+  const originSelect = document.querySelector("#origin-select")
+  categorySelect.addEventListener("change", function () {
+    climateSelect.value = ""
+    originSelect.value = ""
+    nameSelect.value = ""
+    const selectedCategory = this.value
+    if (selectedCategory !== "") {
+      searchByDropdown(selectedCategory, "Categories")
+    }
+  })
+}
 
 ////search by origin
-originSelect.addEventListener("change", function () {
-  categorySelect.value = ""
-  climateSelect.value = ""
-  nameSelect.value = ""
-  const selectedOrigin = this.value
-  if (selectedOrigin !== "") {
-    searchByDropdown(selectedOrigin, "Origin")
-  }
-})
+if (renderedSearchBoxes) {
+  const climateSelect = document.querySelector("#climate-select")
+  const categorySelect = document.querySelector("#category-select")
+  const originSelect = document.querySelector("#origin-select")
+  originSelect.addEventListener("change", function () {
+    categorySelect.value = ""
+    climateSelect.value = ""
+    nameSelect.value = ""
+    const selectedOrigin = this.value
+    if (selectedOrigin !== "") {
+      searchByDropdown(selectedOrigin, "Origin")
+    }
+  })
+}
 
 function searchByDropdown(selectChoice, selectType) {
   plantSection.innerHTML = ""
