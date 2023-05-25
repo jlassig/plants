@@ -1,24 +1,8 @@
+////GET all plants (lite)
+
 const url = "https://house-plants2.p.rapidapi.com/all-lite"
 const plantSection = document.querySelector("#plant-section")
 const searchForm = document.querySelector("#search-form")
-
-//////this data is used for MOST things
-async function fetchData() {
-  const plantData = await getPlantData()
-  return plantData
-}
-
-(async () =>{
-  const plantData = fetchData()
-//////have the selects already been added to the Search form?
-if (searchForm.childElementCount === 0 && (plantData)) {
-  getSearchArray("Climat")
-  getSearchArray("Categories")
-  getSearchArray("Origin")
-}
-})()
-
-
 
 const options = {
   method: "GET",
@@ -27,41 +11,32 @@ const options = {
     "X-RapidAPI-Host": "house-plants2.p.rapidapi.com",
   },
 }
-async function getPlantData() {
+
+function getPlantData() {
   const storedData = localStorage.getItem("plantData")
   //////Is the data already in local storage???
   if (storedData) {
-    console.log("pulling from local")
     const parsedData = JSON.parse(storedData)
-    /// console.log(parsedData)
+    // console.log(parsedData)
     return parsedData
-    // localStorage.removeItem(`plantData`)
   } else {
     /////// Fetch the data from the API if not available in local storage
-    return await getPlantAPI()
+    getPlantAPI()
   }
 }
 
 async function getPlantAPI() {
   try {
-    console.log("getting plant data from the API")
     const response = await fetch(url, options)
     const result = await response.json()
     localStorage.setItem("plantData", JSON.stringify(result))
-    //////parsing the info that we just got from the api
-    // const storedData = localStorage.getItem("plantData")
-    // const parsedData = JSON.parse(storedData)
-    // return parsedData
-    // const parsedResult = localStorage.getItem("plantData")
-    // return parsedResult
     return result
   } catch (error) {
     console.error(error)
   }
 }
-
-
-
+//////this data is used for MOST things
+const plantData = getPlantData()
 
 //////To get the care instructions for a single plant, I have to use the getById request:
 async function getSinglePlantData(id) {
@@ -85,7 +60,7 @@ async function getSinglePlantData(id) {
       console.log(`This came from the API:`, result)
       return result
     } catch (error) {
-      console.error("Error getting data from API:", error)
+      console.error("Error fetching data from API:", error)
     }
   }
 }
@@ -143,6 +118,12 @@ function renderDropdowns(optionsArray, name) {
   searchForm.appendChild(wrapper)
   wrapper.appendChild(label)
   wrapper.appendChild(select)
+}
+//////have the selects already been added to the Search form?
+if (searchForm.childElementCount === 0) {
+  getSearchArray("Climat")
+  getSearchArray("Categories")
+  getSearchArray("Origin")
 }
 
 //////ugggh, I hated how climate was misspelled, categories wasn't category and Origin is capitalized. so here is where I fix them.
