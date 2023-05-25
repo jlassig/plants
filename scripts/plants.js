@@ -2,8 +2,10 @@
 
 // const url = "https://house-plants2.p.rapidapi.com/all-lite"
 const plantSection = document.querySelector("#plant-section")
-const searchForm = document.querySelector("#search-form")
-let renderedSearchBoxes = false
+// const searchForm = document.querySelector("#search-form")
+const climateSelect = document.querySelector("#climate-select")
+const categorySelect = document.querySelector("#category-select")
+const originSelect = document.querySelector("#origin-select")
 
 const options = {
   method: "GET",
@@ -13,20 +15,23 @@ const options = {
   },
 }
 
-//////this data is used for MOST things
 async function fetchData() {
   const plantData = await getPlantData()
   //////have the selects already been added to the Search form?
-  if (searchForm.childElementCount === 0) {
+  // if (searchForm.childElementCount === 0) {
+  //   getSearchArray("Climat", plantData)
+  //   getSearchArray("Categories", plantData)
+  //   getSearchArray("Origin", plantData)
+  // }
+  if (climateSelect.childElementCount === 0) {
     getSearchArray("Climat", plantData)
     getSearchArray("Categories", plantData)
     getSearchArray("Origin", plantData)
-    renderedSearchBoxes = true
   }
 
   return plantData
 }
-
+//////this data is used for MOST things
 const plantData = fetchData()
 
 async function getPlantData() {
@@ -107,20 +112,12 @@ function getSearchArray(searchType, plantInfo) {
 }
 
 //////putting the dropdowns in dynamically, instead of through HTML
+
 function renderDropdowns(optionsArray, name) {
   const nameLower = getBetterName(name)
   const searchName = `${nameLower}-select`
-  const wrapper = document.createElement("div")
-  const label = document.createElement("label")
-  const select = document.createElement("select")
+  const select = document.querySelector(`#${searchName}`)
   const blankOption = document.createElement("option")
-
-  wrapper.setAttribute("class", "dropdown-wrapper")
-  label.setAttribute("for", searchName)
-  label.innerHTML = `Search by ${nameLower}`
-  select.setAttribute("id", searchName)
-  select.setAttribute("name", searchName)
-  select.setAttribute("class", searchName)
 
   blankOption.setAttribute("value", "")
   blankOption.disabled = true
@@ -134,10 +131,39 @@ function renderDropdowns(optionsArray, name) {
     option.innerHTML = optionsArray[i]
     select.appendChild(option)
   }
-  searchForm.appendChild(wrapper)
-  wrapper.appendChild(label)
-  wrapper.appendChild(select)
 }
+
+// function renderDropdowns(optionsArray, name) {
+//   const nameLower = getBetterName(name)
+//   const searchName = `${nameLower}-select`
+//   const wrapper = document.createElement("div")
+//   const label = document.createElement("label")
+//   const select = document.createElement("select")
+//   const blankOption = document.createElement("option")
+
+//   wrapper.setAttribute("class", "dropdown-wrapper")
+//   label.setAttribute("for", searchName)
+//   label.innerHTML = `Search by ${nameLower}`
+//   select.setAttribute("id", searchName)
+//   select.setAttribute("name", searchName)
+//   select.setAttribute("class", searchName)
+
+//   blankOption.setAttribute("value", "")
+//   blankOption.disabled = true
+//   blankOption.selected = true
+//   blankOption.innerHTML = "Select an option"
+//   select.appendChild(blankOption)
+
+//   for (let i = 0; i < optionsArray.length; i++) {
+//     const option = document.createElement("option")
+//     option.setAttribute("value", optionsArray[i])
+//     option.innerHTML = optionsArray[i]
+//     select.appendChild(option)
+//   }
+//   searchForm.appendChild(wrapper)
+//   wrapper.appendChild(label)
+//   wrapper.appendChild(select)
+// }
 
 //////ugggh, I hated how climate was misspelled, categories wasn't category and Origin is capitalized. so here is where I fix them.
 function getBetterName(searchType) {
@@ -352,27 +378,21 @@ function getTempString(min, max) {
 ////// searching by name fields
 const nameForm = document.querySelector("#name-form")
 const nameSelect = document.querySelector("#plant-name")
-////// the dropdowns:
-// const climateSelect = document.querySelector("#climate-select")
-// const categorySelect = document.querySelector("#category-select")
-// const originSelect = document.querySelector("#origin-select")
+
+
 
 //////Searching by name:
 nameForm.addEventListener("submit", function (event) {
   event.preventDefault()
-  const climateSelect = document.querySelector("#climate-select")
-  const categorySelect = document.querySelector("#category-select")
-  const originSelect = document.querySelector("#origin-select")
   climateSelect.value = ""
   categorySelect.value = ""
   originSelect.value = ""
   const originalName = nameSelect.value
   const nameValue = originalName.toUpperCase()
   if (nameSelect.value == "") {
-
     searchByName(nameValue, true, originalName)
   } else {
-        console.log(nameSelect.value)
+    console.log(nameSelect.value)
     searchByName(nameValue, false, originalName)
   }
 })
@@ -381,7 +401,6 @@ function searchByName(nameValue, blankName, originalName) {
   let unknownPlant = true
   plantSection.innerHTML = ""
   for (let i = 0; i < plantData.length; i++) {
-
     const commonName = plantData[i]["Common name"]
     ////// "blankName" is for when the input box is blank and user clicks "submit". The reason I put this in here is because there are quite a few plants where the Common Name is blank. This pulls those plants up.
     if (blankName) {
@@ -425,52 +444,38 @@ function printWarningSign(nameValue) {
 }
 
 /////Searching by climate:
-if (renderedSearchBoxes == true) {
-  const climateSelect = document.querySelector("#climate-select")
-  const categorySelect = document.querySelector("#category-select")
-  const originSelect = document.querySelector("#origin-select")
-  climateSelect.addEventListener("change", function () {
-    categorySelect.value = ""
-    nameSelect.value = ""
-    originSelect.value = ""
-    const selectedClimate = this.value
-    if (selectedClimate !== "") {
-      searchByDropdown(selectedClimate, "Climat")
-    }
-  })
-}
+climateSelect.addEventListener("change", function () {
+  categorySelect.value = ""
+  nameSelect.value = ""
+  originSelect.value = ""
+  const selectedClimate = this.value
+  console.log(selectedClimate)
+  if (selectedClimate !== "") {
+    searchByDropdown(selectedClimate, "Climat")
+  }
+})
 
 //////searching by category:
-if (renderedSearchBoxes) {
-  const climateSelect = document.querySelector("#climate-select")
-  const categorySelect = document.querySelector("#category-select")
-  const originSelect = document.querySelector("#origin-select")
-  categorySelect.addEventListener("change", function () {
-    climateSelect.value = ""
-    originSelect.value = ""
-    nameSelect.value = ""
-    const selectedCategory = this.value
-    if (selectedCategory !== "") {
-      searchByDropdown(selectedCategory, "Categories")
-    }
-  })
-}
+categorySelect.addEventListener("change", function () {
+  climateSelect.value = ""
+  originSelect.value = ""
+  nameSelect.value = ""
+  const selectedCategory = this.value
+  if (selectedCategory !== "") {
+    searchByDropdown(selectedCategory, "Categories")
+  }
+})
 
 ////search by origin
-if (renderedSearchBoxes) {
-  const climateSelect = document.querySelector("#climate-select")
-  const categorySelect = document.querySelector("#category-select")
-  const originSelect = document.querySelector("#origin-select")
-  originSelect.addEventListener("change", function () {
-    categorySelect.value = ""
-    climateSelect.value = ""
-    nameSelect.value = ""
-    const selectedOrigin = this.value
-    if (selectedOrigin !== "") {
-      searchByDropdown(selectedOrigin, "Origin")
-    }
-  })
-}
+originSelect.addEventListener("change", function () {
+  categorySelect.value = ""
+  climateSelect.value = ""
+  nameSelect.value = ""
+  const selectedOrigin = this.value
+  if (selectedOrigin !== "") {
+    searchByDropdown(selectedOrigin, "Origin")
+  }
+})
 
 function searchByDropdown(selectChoice, selectType) {
   plantSection.innerHTML = ""

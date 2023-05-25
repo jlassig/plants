@@ -19,10 +19,38 @@
     <main>
       <form id="name-form" class="name-form">
         <label for="plant-name">Search by common name of plant</label>
-        <input type="text" id="plant-name" name="plant-name" class="plant-name"/>
-        <button type="submit" id="name-submit" class="name-submit">Search</button>
+        <input
+          type="text"
+          id="plant-name"
+          name="plant-name"
+          class="plant-name" />
+        <button type="submit" id="name-submit" class="name-submit">
+          Search
+        </button>
       </form>
-      <form id="search-form" class="search-form"></form>
+      <form id="search-form" class="search-form">
+        <div class="dropdown-wrapper">
+          <label for="climate-select">Search by climate</label>
+          <select
+            class="climate-select"
+            id="climate-select"
+            name="climate-select"></select>
+        </div>
+        <div class="dropdown-wrapper">
+          <label for="category-select">Search by category</label>
+          <select
+            class="category-select"
+            id="category-select"
+            name="category-select"></select>
+        </div>
+        <div class="dropdown-wrapper">
+          <label for="origin-select">Search by origin</label>
+          <select
+            class="origin-select"
+            id="origin-select"
+            name="origin-select"></select>
+        </div>
+      </form>
       <section id="plant-section" class="plant-section"></section>
     </main>
     <script src="scripts/plants.js"></script>
