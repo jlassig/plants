@@ -1,6 +1,4 @@
 const url = "https://house-plants2.p.rapidapi.com/all-lite"
-
-////GET all plants (lite)
 const plantSection = document.querySelector("#plant-section")
 const searchForm = document.querySelector("#search-form")
 
