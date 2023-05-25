@@ -1,9 +1,26 @@
 const url = "https://house-plants2.p.rapidapi.com/all-lite"
 
 ////GET all plants (lite)
-
 const plantSection = document.querySelector("#plant-section")
 const searchForm = document.querySelector("#search-form")
+
+//////this data is used for MOST things
+async function fetchData() {
+  const plantData = await getPlantData()
+  return plantData
+}
+
+(async () =>{
+  const plantData = fetchData()
+//////have the selects already been added to the Search form?
+if (searchForm.childElementCount === 0 && (plantData)) {
+  getSearchArray("Climat")
+  getSearchArray("Categories")
+  getSearchArray("Origin")
+}
+})()
+
+
 
 const options = {
   method: "GET",
@@ -34,22 +51,19 @@ async function getPlantAPI() {
     const result = await response.json()
     localStorage.setItem("plantData", JSON.stringify(result))
     //////parsing the info that we just got from the api
-    const storedData = localStorage.getItem("plantData")
-    const parsedData = JSON.parse(storedData)
-    return parsedData
+    // const storedData = localStorage.getItem("plantData")
+    // const parsedData = JSON.parse(storedData)
+    // return parsedData
+    // const parsedResult = localStorage.getItem("plantData")
+    // return parsedResult
+    return result
   } catch (error) {
     console.error(error)
   }
 }
-//////this data is used for MOST things
-const plantData = getPlantData()
 
-//////have the selects already been added to the Search form?
-if (searchForm.childElementCount === 0) {
-  getSearchArray("Climat")
-  getSearchArray("Categories")
-  getSearchArray("Origin")
-}
+
+
 
 //////To get the care instructions for a single plant, I have to use the getById request:
 async function getSinglePlantData(id) {
