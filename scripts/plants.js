@@ -31,7 +31,6 @@ async function fetchData() {
 
   return plantData
 }
-//////this data is used for MOST things
 const plantData = fetchData()
 
 async function getPlantData() {
@@ -40,8 +39,8 @@ async function getPlantData() {
   if (storedData) {
     try {
       const parsedData = JSON.parse(storedData)
-      console.log("plantData from local storage")
-      console.log(parsedData)
+      // console.log("plantData from local storage")
+      // console.log(parsedData)
       return parsedData
     } catch (error) {
       console.error("Error parsing local storage data:", error)
@@ -53,8 +52,8 @@ async function getPlantData() {
       const response = await fetch(url, options)
       const result = await response.json()
       localStorage.setItem("plantData", JSON.stringify(result))
-      console.log("plantData came from the API")
-      console.log(result)
+      // console.log("plantData came from the API")
+      // console.log(result)
       return result
     } catch (error) {
       console.error("Error fetching data from API", error)
@@ -69,7 +68,7 @@ async function getSinglePlantData(id) {
   if (storedData) {
     try {
       const parsedData = JSON.parse(storedData)
-      console.log(`This is in local storage:`, parsedData)
+      // console.log(`This is in local storage:`, parsedData)
       return parsedData
     } catch (error) {
       console.error("Error parsing local storage data:", error)
@@ -81,7 +80,7 @@ async function getSinglePlantData(id) {
       const response = await fetch(url, options)
       const result = await response.json()
       localStorage.setItem(`ID = ${id}`, JSON.stringify(result))
-      console.log(`This came from the API:`, result)
+      // console.log(`This came from the API:`, result)
       return result
     } catch (error) {
       console.error("Error fetching data from API:", error)
@@ -112,7 +111,6 @@ function getSearchArray(searchType, plantInfo) {
 }
 
 //////putting the dropdowns in dynamically, instead of through HTML
-
 function renderDropdowns(optionsArray, name) {
   const nameLower = getBetterName(name)
   const searchName = `${nameLower}-select`
@@ -379,8 +377,6 @@ function getTempString(min, max) {
 const nameForm = document.querySelector("#name-form")
 const nameSelect = document.querySelector("#plant-name")
 
-
-
 //////Searching by name:
 nameForm.addEventListener("submit", function (event) {
   event.preventDefault()
@@ -392,112 +388,123 @@ nameForm.addEventListener("submit", function (event) {
   if (nameSelect.value == "") {
     searchByName(nameValue, true, originalName)
   } else {
-    console.log(nameSelect.value)
     searchByName(nameValue, false, originalName)
   }
 })
 
 function searchByName(nameValue, blankName, originalName) {
-  let unknownPlant = true
-  plantSection.innerHTML = ""
-  for (let i = 0; i < plantData.length; i++) {
-    const commonName = plantData[i]["Common name"]
-    ////// "blankName" is for when the input box is blank and user clicks "submit". The reason I put this in here is because there are quite a few plants where the Common Name is blank. This pulls those plants up.
-    if (blankName) {
-      if (
-        !commonName ||
-        (Array.isArray(commonName) && commonName.length === 0)
-      ) {
-        renderPlantInfo(plantData[i], "name")
-        unknownPlant = false
+  fetchData()
+    .then((data) => {
+      let unknownPlant = true
+      plantSection.innerHTML = ""
+      for (let i = 0; i < data.length; i++) {
+        const commonName = data[i]["Common name"]
+        ////// "blankName" is for when the input box is blank and user clicks "submit". The reason I put this in here is because there are quite a few plants where the Common Name is blank. This pulls those plants up.
+        if (blankName) {
+          if (
+            !commonName ||
+            (Array.isArray(commonName) && commonName.length === 0)
+          ) {
+            renderPlantInfo(data[i], "name")
+            unknownPlant = false
+          }
+          //////The following code is because the Common Name in the API pulls back either an Array or a String
+        } else {
+          if (
+            //////if the Common Name has an array, then do this one.
+            Array.isArray(commonName) &&
+            commonName.some((name) => name.toUpperCase().includes(nameValue))
+          ) {
+            renderPlantInfo(data[i], "name")
+            unknownPlant = false
+          } else if (
+            ///// else if the Common Name is a string, then do this one.
+            typeof commonName === "string" &&
+            commonName.toUpperCase().includes(nameValue)
+          ) {
+            renderPlantInfo(data[i], "name")
+            unknownPlant = false
+          }
+        }
       }
-      //////The following code is because the Common Name in the API pulls back either an Array or a String
-    } else {
-      if (
-        //////if the Common Name has an array, then do this one.
-        Array.isArray(commonName) &&
-        commonName.some((name) => name.toUpperCase().includes(nameValue))
-      ) {
-        renderPlantInfo(plantData[i], "name")
-        unknownPlant = false
-      } else if (
-        ///// else if the Common Name is a string, then do this one.
-        typeof commonName === "string" &&
-        commonName.toUpperCase().includes(nameValue)
-      ) {
-        renderPlantInfo(plantData[i], "name")
-        unknownPlant = false
+      //////in case the user puts in a name for a plant that is not in the database
+      if (unknownPlant) {
+        printWarningSign(originalName)
       }
-    }
-  }
-  //////in case the user puts in a name for a plant that is not in the database
-  if (unknownPlant) {
-    printWarningSign(originalName)
-  }
-}
-
-function printWarningSign(nameValue) {
-  const warningDiv = document.createElement("div")
-  warningDiv.setAttribute("class", "warning")
-  warningDiv.innerHTML = `"${nameValue}" is not in the database. Please try again.`
-  plantSection.appendChild(warningDiv)
-}
-
-/////Searching by climate:
-climateSelect.addEventListener("change", function () {
-  categorySelect.value = ""
-  nameSelect.value = ""
-  originSelect.value = ""
-  const selectedClimate = this.value
-  console.log(selectedClimate)
-  if (selectedClimate !== "") {
-    searchByDropdown(selectedClimate, "Climat")
-  }
-})
-
-//////searching by category:
-categorySelect.addEventListener("change", function () {
-  climateSelect.value = ""
-  originSelect.value = ""
-  nameSelect.value = ""
-  const selectedCategory = this.value
-  if (selectedCategory !== "") {
-    searchByDropdown(selectedCategory, "Categories")
-  }
-})
-
-////search by origin
-originSelect.addEventListener("change", function () {
-  categorySelect.value = ""
-  climateSelect.value = ""
-  nameSelect.value = ""
-  const selectedOrigin = this.value
-  if (selectedOrigin !== "") {
-    searchByDropdown(selectedOrigin, "Origin")
-  }
-})
-
-function searchByDropdown(selectChoice, selectType) {
-  plantSection.innerHTML = ""
-  for (let i = 0; i < plantData.length; i++) {
-    ///////Because sometimes the value for the selectType is an Array (like "Origin")
-    if (
-      Array.isArray(plantData[i][selectType]) &&
-      plantData[i][selectType][0] === selectChoice
-    ) {
-      renderPlantInfo(plantData[i], selectType)
-    } else if (plantData[i][selectType] === selectChoice) {
-      renderPlantInfo(plantData[i], selectType)
-    }
-  }
-}
-
-function toTitleCase(str) {
-  return str
-    .toLowerCase()
-    .split(" ")
-    .map(function (word) {
-      return word.charAt(0).toUpperCase() + word.slice(1)
     })
-    .join(" ")
-}
+    .catch((error) => {
+      console.log("Error fetching data: ", error)
+    })
+  }
+
+  function printWarningSign(nameValue) {
+    const warningDiv = document.createElement("div")
+    warningDiv.setAttribute("class", "warning")
+    warningDiv.innerHTML = `"${nameValue}" is not in the database. Please try again.`
+    plantSection.appendChild(warningDiv)
+  }
+
+  /////Searching by climate:
+  climateSelect.addEventListener("change", function () {
+    categorySelect.value = ""
+    nameSelect.value = ""
+    originSelect.value = ""
+    const selectedClimate = this.value
+    if (selectedClimate !== "") {
+      searchByDropdown(selectedClimate, "Climat")
+    }
+  })
+
+  //////searching by category:
+  categorySelect.addEventListener("change", function () {
+    climateSelect.value = ""
+    originSelect.value = ""
+    nameSelect.value = ""
+    const selectedCategory = this.value
+    if (selectedCategory !== "") {
+      searchByDropdown(selectedCategory, "Categories")
+    }
+  })
+
+  ////search by origin
+  originSelect.addEventListener("change", function () {
+    categorySelect.value = ""
+    climateSelect.value = ""
+    nameSelect.value = ""
+    const selectedOrigin = this.value
+    if (selectedOrigin !== "") {
+      searchByDropdown(selectedOrigin, "Origin")
+    }
+  })
+
+  function searchByDropdown(selectChoice, selectType) {
+    plantSection.innerHTML = ""
+    fetchData()
+      .then((data) => {
+        for (let i = 0; i < data.length; i++) {
+          ///////Because sometimes the value for the selectType is an Array (like "Origin")
+          if (
+            Array.isArray(data[i][selectType]) &&
+            data[i][selectType][0] === selectChoice
+          ) {
+            renderPlantInfo(data[i], selectType)
+          } else if (data[i][selectType] === selectChoice) {
+            renderPlantInfo(data[i], selectType)
+          }
+        }
+      })
+      .catch((error) => {
+        console.log("Error fetching data: ", error)
+      })
+  }
+
+  function toTitleCase(str) {
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map(function (word) {
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      })
+      .join(" ")
+  }
+
