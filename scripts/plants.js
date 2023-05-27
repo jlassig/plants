@@ -31,7 +31,9 @@ async function fetchData() {
 
   return plantData
 }
-const plantData = fetchData()
+
+///////go and get the data for the plants. This pulls up the dropdowns and stores the PlantData in local storage.
+fetchData()
 
 async function getPlantData() {
   const storedData = localStorage.getItem("plantData")
@@ -52,7 +54,7 @@ async function getPlantData() {
       const response = await fetch(url, options)
       const result = await response.json()
       localStorage.setItem("plantData", JSON.stringify(result))
-      // console.log("plantData came from the API")
+      console.log("plantData came from the API")
       // console.log(result)
       return result
     } catch (error) {
@@ -393,6 +395,7 @@ nameForm.addEventListener("submit", function (event) {
 })
 
 function searchByName(nameValue, blankName, originalName) {
+  //////go get the data for the plants
   fetchData()
     .then((data) => {
       let unknownPlant = true
@@ -479,6 +482,7 @@ function searchByName(nameValue, blankName, originalName) {
 
   function searchByDropdown(selectChoice, selectType) {
     plantSection.innerHTML = ""
+    //////go get the data for the plants
     fetchData()
       .then((data) => {
         for (let i = 0; i < data.length; i++) {
