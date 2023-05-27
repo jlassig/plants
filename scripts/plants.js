@@ -369,7 +369,6 @@ function getTempString(min, max) {
   } else {
     minString = min["F"]
     maxString = max["F"]
-
     tempString = `Temperature range: ${minString}&#xb0;F - ${maxString}&#xb0;F`
   }
   return tempString
